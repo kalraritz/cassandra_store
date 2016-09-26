@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="CassandraProject" />
+        <module name="Cassandra" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="CassandraProject" target="1.5" />
+      <module name="Cassandra" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
