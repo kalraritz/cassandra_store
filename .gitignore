@@ -2,3 +2,5 @@
 __MACOSX
 # .idea
 .idea/
+# target
+target/
