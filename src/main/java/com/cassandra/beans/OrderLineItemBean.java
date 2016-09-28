@@ -1,13 +1,16 @@
 package com.cassandra.beans;
 
+import com.cassandra.models.Item;
+import com.cassandra.models.ItemOrders;
+
 /**
  * Created by manisha on 25/09/2016.
  */
 public class OrderLineItemBean {
     OrderKey orderKey;
-    Item item;
+    ItemOrders item;
 
-    public OrderLineItemBean(OrderKey orderKey, Item item) {
+    public OrderLineItemBean(OrderKey orderKey, ItemOrders item) {
         this.orderKey = orderKey;
         this.item = item;
     }
@@ -20,11 +23,11 @@ public class OrderLineItemBean {
         this.orderKey = orderKey;
     }
 
-    public Item getItem() {
+    public ItemOrders getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(ItemOrders item) {
         this.item = item;
     }
 }

@@ -1,17 +1,13 @@
-package com.cassandra.beans;
+package com.cassandra.models;
 
 import com.datastax.driver.mapping.annotations.Field;
-import com.datastax.driver.mapping.annotations.UDT;
 
-import java.io.Serializable;
 import java.util.Date;
 
-
 /**
- * Created by manisha on 24/09/2016.
+ * Created by Sachin on 9/28/2016.
  */
-@UDT(keyspace = "orders", name = "item")
-public class Item implements Serializable {
+public class ItemOrders {
 
     @Field(name = "OL_I_ID")
     private int olItemId;
@@ -30,7 +26,7 @@ public class Item implements Serializable {
     @Field(name = "OL_AMOUNT")
     private double olAmount;
 
-    public Item(int olItemId, String olItemName, int olNumber, int olSuppWarehouseId, int olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
+    public ItemOrders(int olItemId, String olItemName, int olNumber, int olSuppWarehouseId, int olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
         this.olItemId = olItemId;
         this.olItemName = olItemName;
         this.olNumber = olNumber;

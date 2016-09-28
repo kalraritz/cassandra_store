@@ -12,10 +12,10 @@ public class Warehouse {
     private String W_CITY;
     private String W_STATE;
     private String W_ZIP;
-    private String W_TAX;
-    private String W_YTD;
+    private double W_TAX;
+    private double W_YTD;
 
-    public Warehouse(int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, String w_TAX, String w_YTD) {
+    public Warehouse(int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, double w_TAX, double w_YTD) {
         this.W_ID = w_ID;
         this.W_NAME = w_NAME;
         this.W_STREET_1 = w_STREET_1;
@@ -83,19 +83,19 @@ public class Warehouse {
         this.W_ZIP = w_ZIP;
     }
 
-    public String getW_TAX() {
+    public double getW_TAX() {
         return this.W_TAX;
     }
 
-    public void setW_TAX(String w_TAX) {
+    public void setW_TAX(double w_TAX) {
         this.W_TAX = w_TAX;
     }
 
-    public String getW_YTD() {
+    public double getW_YTD() {
         return this.W_YTD;
     }
 
-    public void setW_YTD(String w_YTD) {
+    public void setW_YTD(double w_YTD) {
         this.W_YTD = w_YTD;
     }
 }

@@ -5,21 +5,21 @@ package com.cassandra.models;
  */
 
 public class Stock {
-    private String S_W_ID;
+    private int S_W_ID;
 
-    public String getS_W_ID() {
+    public int getS_W_ID() {
         return S_W_ID;
     }
 
-    public void setS_W_ID(String s_W_ID) {
+    public void setS_W_ID(int s_W_ID) {
         S_W_ID = s_W_ID;
     }
 
-    private String S_ID;
-    private String S_QUANTITY;
-    private String S_YTD;
-    private String S_ORDER_CNT;
-    private String S_REMOTE_CNT;
+    private int S_ID;
+    private int S_QUANTITY;
+    private double S_YTD;
+    private int S_ORDER_CNT;
+    private int S_REMOTE_CNT;
     private String S_DIST_01;
     private String S_DIST_02;
     private String S_DIST_03;
@@ -32,7 +32,7 @@ public class Stock {
     private String S_DIST_10;
     private String S_DATA;
 
-    public Stock(String s_W_ID, String s_ID, String s_QUANTITY, String s_YTD, String s_ORDER_CNT, String s_REMOTE_CNT, String s_DIST_01, String s_DIST_02, String s_DIST_03, String s_DIST_04, String s_DIST_05, String s_DIST_06, String s_DIST_07, String s_DIST_08, String s_DIST_09, String s_DIST_10, String s_DATA) {
+    public Stock(int s_W_ID, int s_ID, int s_QUANTITY, double s_YTD, int s_ORDER_CNT, int s_REMOTE_CNT, String s_DIST_01, String s_DIST_02, String s_DIST_03, String s_DIST_04, String s_DIST_05, String s_DIST_06, String s_DIST_07, String s_DIST_08, String s_DIST_09, String s_DIST_10, String s_DATA) {
         this.S_W_ID = s_W_ID;
         this.S_ID = s_ID;
         this.S_QUANTITY = s_QUANTITY;
@@ -52,43 +52,43 @@ public class Stock {
         this.S_DATA = s_DATA;
     }
 
-    public String getS_ID() {
+    public int getS_ID() {
         return S_ID;
     }
 
-    public void setS_ID(String s_ID) {
+    public void setS_ID(int s_ID) {
         S_ID = s_ID;
     }
 
-    public String getS_QUANTITY() {
+    public int getS_QUANTITY() {
         return S_QUANTITY;
     }
 
-    public void setS_QUANTITY(String s_QUANTITY) {
+    public void setS_QUANTITY(int s_QUANTITY) {
         S_QUANTITY = s_QUANTITY;
     }
 
-    public String getS_YTD() {
+    public double getS_YTD() {
         return S_YTD;
     }
 
-    public void setS_YTD(String s_YTD) {
+    public void setS_YTD(double s_YTD) {
         S_YTD = s_YTD;
     }
 
-    public String getS_ORDER_CNT() {
+    public int getS_ORDER_CNT() {
         return S_ORDER_CNT;
     }
 
-    public void setS_ORDER_CNT(String s_ORDER_CNT) {
+    public void setS_ORDER_CNT(int s_ORDER_CNT) {
         S_ORDER_CNT = s_ORDER_CNT;
     }
 
-    public String getS_REMOTE_CNT() {
+    public int getS_REMOTE_CNT() {
         return S_REMOTE_CNT;
     }
 
-    public void setS_REMOTE_CNT(String s_REMOTE_CNT) {
+    public void setS_REMOTE_CNT(int s_REMOTE_CNT) {
         S_REMOTE_CNT = s_REMOTE_CNT;
     }
 

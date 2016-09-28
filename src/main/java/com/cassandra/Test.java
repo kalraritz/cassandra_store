@@ -1,7 +1,8 @@
 package com.cassandra;
 
-import com.cassandra.beans.Item;
+import com.cassandra.models.Item;
 import com.cassandra.beans.OrderKey;
+import com.cassandra.models.ItemOrders;
 import com.datastax.driver.core.*;
 import com.opencsv.CSVReader;
 
@@ -19,7 +20,7 @@ public class Test {
     public Test() {
         this.classLoader = getClass().getClassLoader();
     }
-    public void dumpNewOrderTransactionDataw(Map<OrderKey, Set<Item>> itemsMap) {
+    public void dumpNewOrderTransactionDataw(Map<OrderKey, Set<ItemOrders>> itemsMap) {
 
         Integer warehouseId;
         Integer districtId;
@@ -29,6 +30,7 @@ public class Test {
         Integer orderLineCount;
         Integer allLocal;
         Date entryDate;
+
 
         try {
             Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
@@ -63,12 +65,12 @@ public class Test {
 //                session.execute(boundStatement.bind(warehouseId, districtId, orderId, entryDate, carrierId, customerId, orderLineCount,
 //                        allLocal, sample));
                 String itemSet = null;
-                Set<Item> items = itemsMap.get(orderKey);
+                Set<ItemOrders> items = itemsMap.get(orderKey);
                 if (items != null) {
-                    Iterator<Item> it = items.iterator();
+                    Iterator<ItemOrders> it = items.iterator();
                     String frozenItem = "";
                     while (it.hasNext()) {
-                        Item item = it.next();
+                        ItemOrders item = it.next();
                         frozenItem = frozenItem + "(" + item.getOlItemId() + ", '" + item.getOlItemName() + "', " + item.getOlNumber() + ", " + item.getOlSuppWarehouseId() + ", " + item.getOlQuantity()
                                 + ", '" + item.getOlDeliveryDate() + "', '" + item.getOlDistInfo() + "', " + item.getOlAmount() + ")" + ",";
                     }
