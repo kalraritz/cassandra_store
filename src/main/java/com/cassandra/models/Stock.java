@@ -1,4 +1,4 @@
-package com.cassandra.models;
+package com.cassandra.beans;
 
 /**
  * Created by Sachin on 9/28/2016.
@@ -15,7 +15,7 @@ public class Stock {
         S_W_ID = s_W_ID;
     }
 
-    private String S_ID;
+    private int S_ID;
     private String S_QUANTITY;
     private String S_YTD;
     private String S_ORDER_CNT;
@@ -32,7 +32,7 @@ public class Stock {
     private String S_DIST_10;
     private String S_DATA;
 
-    public Stock(String s_W_ID, String s_ID, String s_QUANTITY, String s_YTD, String s_ORDER_CNT, String s_REMOTE_CNT, String s_DIST_01, String s_DIST_02, String s_DIST_03, String s_DIST_04, String s_DIST_05, String s_DIST_06, String s_DIST_07, String s_DIST_08, String s_DIST_09, String s_DIST_10, String s_DATA) {
+    public Stock(String s_W_ID, int s_ID, String s_QUANTITY, String s_YTD, String s_ORDER_CNT, String s_REMOTE_CNT, String s_DIST_01, String s_DIST_02, String s_DIST_03, String s_DIST_04, String s_DIST_05, String s_DIST_06, String s_DIST_07, String s_DIST_08, String s_DIST_09, String s_DIST_10, String s_DATA) {
         this.S_W_ID = s_W_ID;
         this.S_ID = s_ID;
         this.S_QUANTITY = s_QUANTITY;
@@ -52,11 +52,11 @@ public class Stock {
         this.S_DATA = s_DATA;
     }
 
-    public String getS_ID() {
+    public int getS_ID() {
         return S_ID;
     }
 
-    public void setS_ID(String s_ID) {
+    public void setS_ID(int s_ID) {
         S_ID = s_ID;
     }
 
