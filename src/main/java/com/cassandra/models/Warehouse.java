@@ -4,7 +4,7 @@ package com.cassandra.models;
  * Created by Sachin on 9/28/2016.
  */
 
-public class Warehouse_1 {
+public class Warehouse {
     private int W_ID;
     private String W_NAME;
     private String W_STREET_1;
@@ -15,7 +15,7 @@ public class Warehouse_1 {
     private double W_TAX;
     private double W_YTD;
 
-    public Warehouse_1(int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, double w_TAX, double w_YTD) {
+    public Warehouse(int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, double w_TAX, double w_YTD) {
         this.W_ID = w_ID;
         this.W_NAME = w_NAME;
         this.W_STREET_1 = w_STREET_1;

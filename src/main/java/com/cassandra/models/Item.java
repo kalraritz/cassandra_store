@@ -1,4 +1,4 @@
-package com.cassandra.beans;
+package com.cassandra.models;
 
 import com.datastax.driver.mapping.annotations.Field;
 import com.datastax.driver.mapping.annotations.UDT;
@@ -14,10 +14,10 @@ public class Item {
     private int I_ID;
     private String I_NAME;
     private double I_PRICE;
-    private String I_IM_ID;
+    private int I_IM_ID;
     private String I_DATA;
 
-    public Item(int i_ID, String i_NAME, double i_PRICE, String i_IM_ID, String i_DATA) {
+    public Item(int i_ID, String i_NAME, double i_PRICE, int i_IM_ID, String i_DATA) {
         this.I_ID = i_ID;
         this.I_NAME = i_NAME;
         this.I_PRICE = i_PRICE;
@@ -49,11 +49,11 @@ public class Item {
         I_PRICE = i_PRICE;
     }
 
-    public String getI_IM_ID() {
+    public int getI_IM_ID() {
         return I_IM_ID;
     }
 
-    public void setI_IM_ID(String i_IM_ID) {
+    public void setI_IM_ID(int i_IM_ID) {
         I_IM_ID = i_IM_ID;
     }
 

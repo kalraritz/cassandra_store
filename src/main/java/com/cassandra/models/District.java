@@ -4,31 +4,31 @@ package com.cassandra.models;
  * Created by Sachin on 9/28/2016.
  */
 public class District {
-    private String D_W_ID;
-    private String D_ID;
+    private int D_W_ID;
+    private int D_ID;
     private String D_NAME;
     private String D_STREET_1;
     private String D_STREET_2;
     private String D_CITY;
     private String D_STATE;
     private String D_ZIP;
-    private String D_TAX;
-    private String D_YTD;
-    private String D_NEXT_O_ID;
+    private double D_TAX;
+    private double D_YTD;
+    private int D_NEXT_O_ID;
 
-    public String getD_W_ID() {
+    public int getD_W_ID() {
         return this.D_W_ID;
     }
 
-    public void setD_W_ID(String d_W_ID) {
+    public void setD_W_ID(int d_W_ID) {
         this.D_W_ID = d_W_ID;
     }
 
-    public String getD_ID() {
+    public int getD_ID() {
         return this.D_ID;
     }
 
-    public void setD_ID(String d_ID) {
+    public void setD_ID(int d_ID) {
         this.D_ID = d_ID;
     }
 
@@ -80,31 +80,31 @@ public class District {
         this.D_ZIP = d_ZIP;
     }
 
-    public String getD_TAX() {
+    public double getD_TAX() {
         return this.D_TAX;
     }
 
-    public void setD_TAX(String d_TAX) {
+    public void setD_TAX(double d_TAX) {
         this.D_TAX = d_TAX;
     }
 
-    public String getD_YTD() {
+    public double getD_YTD() {
         return this.D_YTD;
     }
 
-    public void setD_YTD(String d_YTD) {
+    public void setD_YTD(double d_YTD) {
         this.D_YTD = d_YTD;
     }
 
-    public String getD_NEXT_O_ID() {
+    public int getD_NEXT_O_ID() {
         return this.D_NEXT_O_ID;
     }
 
-    public void setD_NEXT_O_ID(String d_NEXT_O_ID) {
+    public void setD_NEXT_O_ID(int d_NEXT_O_ID) {
         this.D_NEXT_O_ID = d_NEXT_O_ID;
     }
 
-    public District(String d_W_ID, String d_ID, String d_NAME, String d_STREET_1, String d_STREET_2, String d_CITY, String d_STATE, String d_ZIP, String d_TAX, String d_YTD, String d_NEXT_O_ID) {
+    public District(int d_W_ID, int d_ID, String d_NAME, String d_STREET_1, String d_STREET_2, String d_CITY, String d_STATE, String d_ZIP, double d_TAX, double d_YTD, int d_NEXT_O_ID) {
         this.D_W_ID = d_W_ID;
         this.D_ID = d_ID;
         this.D_NAME = d_NAME;

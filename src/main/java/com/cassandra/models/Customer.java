@@ -1,13 +1,15 @@
 package com.cassandra.models;
 
+import java.sql.Timestamp;
+
 /**
  * Created by Sachin on 9/28/2016.
  */
 
 public class Customer {
-    private String C_W_ID;
-    private String C_D_ID;
-    private String C_ID;
+    private int C_W_ID;
+    private int C_D_ID;
+    private int C_ID;
     private String C_FIRST;
     private String C_MIDDLE;
     private String C_LAST;
@@ -17,37 +19,37 @@ public class Customer {
     private String C_STATE;
     private String C_ZIP;
     private String C_PHONE;
-    private String C_SINCE;
+    private Timestamp C_SINCE;
     private String C_CREDIT;
-    private String C_CREDIT_LIM;
-    private String C_DISCOUNT;
-    private String C_BALANCE;
-    private String C_YTD_PAYMENT;
-    private String C_PAYMENT_CNT;
-    private String C_DELIVERY_CNT;
+    private double C_CREDIT_LIM;
+    private double C_DISCOUNT;
+    private double C_BALANCE;
+    private double C_YTD_PAYMENT;
+    private int C_PAYMENT_CNT;
+    private int C_DELIVERY_CNT;
     private String C_DATA;
 
-    public String getC_W_ID() {
+    public int getC_W_ID() {
         return this.C_W_ID;
     }
 
-    public void setC_W_ID(String c_W_ID) {
+    public void setC_W_ID(int c_W_ID) {
         this.C_W_ID = c_W_ID;
     }
 
-    public String getC_D_ID() {
+    public int getC_D_ID() {
         return this.C_D_ID;
     }
 
-    public void setC_D_ID(String c_D_ID) {
+    public void setC_D_ID(int c_D_ID) {
         this.C_D_ID = c_D_ID;
     }
 
-    public String getC_ID() {
+    public int getC_ID() {
         return this.C_ID;
     }
 
-    public void setC_ID(String c_ID) {
+    public void setC_ID(int c_ID) {
         this.C_ID = c_ID;
     }
 
@@ -123,11 +125,11 @@ public class Customer {
         this.C_PHONE = c_PHONE;
     }
 
-    public String getC_SINCE() {
+    public Timestamp getC_SINCE() {
         return this.C_SINCE;
     }
 
-    public void setC_SINCE(String c_SINCE) {
+    public void setC_SINCE(Timestamp c_SINCE) {
         this.C_SINCE = c_SINCE;
     }
 
@@ -139,51 +141,51 @@ public class Customer {
         this.C_CREDIT = c_CREDIT;
     }
 
-    public String getC_CREDIT_LIM() {
+    public double getC_CREDIT_LIM() {
         return this.C_CREDIT_LIM;
     }
 
-    public void setC_CREDIT_LIM(String c_CREDIT_LIM) {
+    public void setC_CREDIT_LIM(double c_CREDIT_LIM) {
         this.C_CREDIT_LIM = c_CREDIT_LIM;
     }
 
-    public String getC_DISCOUNT() {
+    public double getC_DISCOUNT() {
         return this.C_DISCOUNT;
     }
 
-    public void setC_DISCOUNT(String c_DISCOUNT) {
+    public void setC_DISCOUNT(double c_DISCOUNT) {
         this.C_DISCOUNT = c_DISCOUNT;
     }
 
-    public String getC_BALANCE() {
+    public double getC_BALANCE() {
         return this.C_BALANCE;
     }
 
-    public void setC_BALANCE(String c_BALANCE) {
+    public void setC_BALANCE(double c_BALANCE) {
         this.C_BALANCE = c_BALANCE;
     }
 
-    public String getC_YTD_PAYMENT() {
+    public double getC_YTD_PAYMENT() {
         return this.C_YTD_PAYMENT;
     }
 
-    public void setC_YTD_PAYMENT(String c_YTD_PAYMENT) {
+    public void setC_YTD_PAYMENT(double c_YTD_PAYMENT) {
         this.C_YTD_PAYMENT = c_YTD_PAYMENT;
     }
 
-    public String getC_PAYMENT_CNT() {
+    public int getC_PAYMENT_CNT() {
         return this.C_PAYMENT_CNT;
     }
 
-    public void setC_PAYMENT_CNT(String c_PAYMENT_CNT) {
+    public void setC_PAYMENT_CNT(int c_PAYMENT_CNT) {
         this.C_PAYMENT_CNT = c_PAYMENT_CNT;
     }
 
-    public String getC_DELIVERY_CNT() {
+    public int getC_DELIVERY_CNT() {
         return this.C_DELIVERY_CNT;
     }
 
-    public void setC_DELIVERY_CNT(String c_DELIVERY_CNT) {
+    public void setC_DELIVERY_CNT(int c_DELIVERY_CNT) {
         this.C_DELIVERY_CNT = c_DELIVERY_CNT;
     }
 
@@ -195,7 +197,7 @@ public class Customer {
         this.C_DATA = c_DATA;
     }
 
-    public Customer(String c_W_ID, String c_D_ID, String c_ID, String c_FIRST, String c_MIDDLE, String c_LAST, String c_STREET_1, String c_STREET_2, String c_CITY, String c_STATE, String c_ZIP, String c_PHONE, String c_SINCE, String c_CREDIT, String c_CREDIT_LIM, String c_DISCOUNT, String c_BALANCE, String c_YTD_PAYMENT, String c_PAYMENT_CNT, String c_DELIVERY_CNT, String c_DATA) {
+    public Customer(int c_W_ID, int c_D_ID, int c_ID, String c_FIRST, String c_MIDDLE, String c_LAST, String c_STREET_1, String c_STREET_2, String c_CITY, String c_STATE, String c_ZIP, String c_PHONE, Timestamp c_SINCE, String c_CREDIT, double c_CREDIT_LIM, double c_DISCOUNT, double c_BALANCE, double c_YTD_PAYMENT, int c_PAYMENT_CNT, int c_DELIVERY_CNT, String c_DATA) {
         this.C_W_ID = c_W_ID;
         this.C_D_ID = c_D_ID;
         this.C_ID = c_ID;
