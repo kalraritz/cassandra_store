@@ -1,33 +1,25 @@
 package com.cassandra;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
-/**
- * Created by manisha on 25/9/16.
- */
 public class CassandraInit {
+    private static Logger logger = Logger.getLogger(CassandraSession.class);
 
     public static void main(String[] args) {
-        DumpOrderData dump = new DumpOrderData();
-        dump.dumpNewOrderTransactionData();
-    }
+        PropertyConfigurator.configure("target/classes/log4j.properties");
+        Session session = CassandraSession.getSession();
 
-    public Session cassandraInit()
-    {
-        Cluster cluster = null;
-        Session session = null;
-        try {
-            cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-            session = cluster.connect("thehood");
-            System.out.println(session.getCluster().getClusterName());
+        if (session == null) {
+            logger.error("Could not create a session");
+            return;
         }
-        catch (Exception e)
-        {
-        }
-        return session;
+
+        //
+
+        CassandraSession.closeSession();
     }
-//        dump.dumpNewOrderTransactionData();
-//        dump.dumpNextOrderData();
-//        dump.test();
 }
