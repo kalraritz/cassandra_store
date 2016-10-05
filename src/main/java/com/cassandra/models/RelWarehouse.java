@@ -4,49 +4,48 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.Table;
 
 /**
- * Created by Sachin on 9/28/2016.
+ * Created by manisha on 04/10/2016.
  */
+@Table(keyspace = "orders", name = "rel_warehouse")
+public class RelWarehouse {
 
-@Table(keyspace = "orders", name = "District")
-public class District {
-
-    @Column( name = "D_ID" )
+    @Column( name = "W_ID" )
     private int id;
 
-    @Column( name = "D_W_ID" )
-    private int warehouseId;
-
-    @Column( name = "D_NAME" )
+    @Column( name = "W_NAME" )
     private String name;
 
-    @Column( name = "D_STREET" )
-    private String street;
+    @Column( name = "W_STREET1" )
+    private String street1;
 
-    @Column( name = "D_STREET2" )
+    @Column( name = "W_STREET2" )
     private String street2;
 
-    @Column( name = "D_CITY" )
+    @Column( name = "W_CITY" )
     private String city;
 
-    @Column( name = "D_STATE" )
+    @Column( name = "W_STATE" )
     private String state;
 
-    @Column( name = "D_ZIP" )
+    @Column( name = "W_ZIP" )
     private String zip;
 
-    @Column( name = "D_TAX" )
+    @Column( name = "W_TAX" )
     private double tax;
 
-    public District(int id, int warehouseId, String name, String street, String street2, String city, String state, String zip, double tax) {
+    @Column( name = "W_YTD" )
+    private double ytd;
+
+    public RelWarehouse(int id, String name, String street1, String street2, String city, String state, String zip, double tax, double ytd) {
         this.id = id;
-        this.warehouseId = warehouseId;
         this.name = name;
-        this.street = street;
+        this.street1 = street1;
         this.street2 = street2;
         this.city = city;
         this.state = state;
         this.zip = zip;
         this.tax = tax;
+        this.ytd = ytd;
     }
 
     public int getId() {
@@ -57,14 +56,6 @@ public class District {
         this.id = id;
     }
 
-    public int getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(int warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
     public String getName() {
         return name;
     }
@@ -73,12 +64,12 @@ public class District {
         this.name = name;
     }
 
-    public String getStreet() {
-        return street;
+    public String getStreet1() {
+        return street1;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setStreet1(String street1) {
+        this.street1 = street1;
     }
 
     public String getStreet2() {
@@ -119,5 +110,13 @@ public class District {
 
     public void setTax(double tax) {
         this.tax = tax;
+    }
+
+    public double getYtd() {
+        return ytd;
+    }
+
+    public void setYtd(double ytd) {
+        this.ytd = ytd;
     }
 }

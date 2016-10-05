@@ -1,40 +1,45 @@
-package com.cassandra.models;
+package com.cassandra.beans;
 
 import com.datastax.driver.mapping.annotations.Field;
 import com.datastax.driver.mapping.annotations.UDT;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
+import java.util.Date;
+
 
 /**
- * Created by manisha on 25/09/2016.
+ * Created by manisha on 24/09/2016.
  */
-@UDT(name = "item", keyspace = "orders")
-public class ItemUDT {
+@UDT(keyspace = "orders", name = "item")
+public class Item {
 
     @Field(name = "OL_I_ID")
     private int olItemId;
-
     @Field(name = "OL_I_NAME")
     private String olItemName;
-
     @Field(name = "OL_NUMBER")
     private int olNumber;
-
     @Field(name = "OL_S_W_ID")
-    private int olSuppWid;
-
+    private int olSuppWarehouseId;
     @Field(name = "OL_QUANTITY")
-    private int olQty;
-
+    private int olQuantity;
     @Field(name = "OL_DELIVERY_D")
-    private Timestamp olDelDate;
-
+    private Date olDeliveryDate;
     @Field(name = "OL_DIST_INFO")
     private String olDistInfo;
-
     @Field(name = "OL_AMOUNT")
     private double olAmount;
 
+    public Item(int olItemId, String olItemName, int olNumber, int olSuppWarehouseId, int olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
+        this.olItemId = olItemId;
+        this.olItemName = olItemName;
+        this.olNumber = olNumber;
+        this.olSuppWarehouseId = olSuppWarehouseId;
+        this.olQuantity = olQuantity;
+        this.olDeliveryDate = olDeliveryDate;
+        this.olDistInfo = olDistInfo;
+        this.olAmount = olAmount;
+    }
 
     public int getOlItemId() {
         return olItemId;
@@ -60,28 +65,28 @@ public class ItemUDT {
         this.olNumber = olNumber;
     }
 
-    public int getOlSuppWid() {
-        return olSuppWid;
+    public int getOlSuppWarehouseId() {
+        return olSuppWarehouseId;
     }
 
-    public void setOlSuppWid(int olSuppWid) {
-        this.olSuppWid = olSuppWid;
+    public void setOlSuppWarehouseId(int olSuppWarehouseId) {
+        this.olSuppWarehouseId = olSuppWarehouseId;
     }
 
-    public int getOlQty() {
-        return olQty;
+    public int getOlQuantity() {
+        return olQuantity;
     }
 
-    public void setOlQty(int olQty) {
-        this.olQty = olQty;
+    public void setOlQuantity(int olQuantity) {
+        this.olQuantity = olQuantity;
     }
 
-    public Timestamp getOlDelDate() {
-        return olDelDate;
+    public Date getOlDeliveryDate() {
+        return olDeliveryDate;
     }
 
-    public void setOlDelDate(Timestamp olDelDate) {
-        this.olDelDate = olDelDate;
+    public void setOlDeliveryDate(Date olDeliveryDate) {
+        this.olDeliveryDate = olDeliveryDate;
     }
 
     public String getOlDistInfo() {

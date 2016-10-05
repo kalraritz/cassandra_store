@@ -1,101 +1,110 @@
 package com.cassandra.models;
 
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  * Created by Sachin on 9/28/2016.
  */
-
+@Table(keyspace = "orders", name = "Warehouse")
 public class Warehouse {
-    private int W_ID;
-    private String W_NAME;
-    private String W_STREET_1;
-    private String W_STREET_2;
-    private String W_CITY;
-    private String W_STATE;
-    private String W_ZIP;
-    private double W_TAX;
-    private double W_YTD;
 
-    public Warehouse(int w_ID, String w_NAME, String w_STREET_1, String w_STREET_2, String w_CITY, String w_STATE, String w_ZIP, double w_TAX, double w_YTD) {
-        this.W_ID = w_ID;
-        this.W_NAME = w_NAME;
-        this.W_STREET_1 = w_STREET_1;
-        this.W_STREET_2 = w_STREET_2;
-        this.W_CITY = w_CITY;
-        this.W_STATE = w_STATE;
-        this.W_ZIP = w_ZIP;
-        this.W_TAX = w_TAX;
-        this.W_YTD = w_YTD;
+    @Column( name = "W_ID" )
+    private int id;
+
+    @Column( name = "W_NAME" )
+    private String name;
+
+    @Column( name = "W_STREET1" )
+    private String street1;
+
+    @Column( name = "W_STREET2" )
+    private String street2;
+
+    @Column( name = "W_CITY" )
+    private String city;
+
+    @Column( name = "W_STATE" )
+    private String state;
+
+    @Column( name = "W_ZIP" )
+    private String zip;
+
+    @Column( name = "W_TAX" )
+    private double tax;
+
+    public Warehouse(int id, String name, String street1, String street2, String city, String state, String zip, double tax) {
+        this.id = id;
+        this.name = name;
+        this.street1 = street1;
+        this.street2 = street2;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.tax = tax;
     }
 
-    public int getW_ID() {
-        return this.W_ID;
+    public int getId() {
+        return id;
     }
 
-    public void setW_ID(int w_ID) {
-        this.W_ID = w_ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getW_NAME() {
-        return this.W_NAME;
+    public String getName() {
+        return name;
     }
 
-    public void setW_NAME(String w_NAME) {
-        this.W_NAME = w_NAME;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getW_STREET_1() {
-        return this.W_STREET_1;
+    public String getStreet1() {
+        return street1;
     }
 
-    public void setW_STREET_1(String w_STREET_1) {
-        this.W_STREET_1 = w_STREET_1;
+    public void setStreet1(String street1) {
+        this.street1 = street1;
     }
 
-    public String getW_STREET_2() {
-        return this.W_STREET_2;
+    public String getStreet2() {
+        return street2;
     }
 
-    public void setW_STREET_2(String w_STREET_2) {
-        this.W_STREET_2 = w_STREET_2;
+    public void setStreet2(String street2) {
+        this.street2 = street2;
     }
 
-    public String getW_CITY() {
-        return this.W_CITY;
+    public String getCity() {
+        return city;
     }
 
-    public void setW_CITY(String w_CITY) {
-        this.W_CITY = w_CITY;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public String getW_STATE() {
-        return this.W_STATE;
+    public String getState() {
+        return state;
     }
 
-    public void setW_STATE(String w_STATE) {
-        this.W_STATE = w_STATE;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public String getW_ZIP() {
-        return this.W_ZIP;
+    public String getZip() {
+        return zip;
     }
 
-    public void setW_ZIP(String w_ZIP) {
-        this.W_ZIP = w_ZIP;
+    public void setZip(String zip) {
+        this.zip = zip;
     }
 
-    public double getW_TAX() {
-        return this.W_TAX;
+    public double getTax() {
+        return tax;
     }
 
-    public void setW_TAX(double w_TAX) {
-        this.W_TAX = w_TAX;
-    }
-
-    public double getW_YTD() {
-        return this.W_YTD;
-    }
-
-    public void setW_YTD(double w_YTD) {
-        this.W_YTD = w_YTD;
+    public void setTax(double tax) {
+        this.tax = tax;
     }
 }

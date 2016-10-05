@@ -1,52 +1,30 @@
-package com.cassandra.models;
-
-import com.datastax.driver.mapping.annotations.Column;
-import com.datastax.driver.mapping.annotations.Table;
+package com.cassandra.beans;
 
 /**
- * Created by Sachin on 9/28/2016.
+ * Created by manisha on 25/09/2016.
  */
+public class WarehouseBean {
 
-@Table(keyspace = "orders", name = "District")
-public class District {
-
-    @Column( name = "D_ID" )
     private int id;
-
-    @Column( name = "D_W_ID" )
-    private int warehouseId;
-
-    @Column( name = "D_NAME" )
     private String name;
-
-    @Column( name = "D_STREET" )
-    private String street;
-
-    @Column( name = "D_STREET2" )
+    private String street1;
     private String street2;
-
-    @Column( name = "D_CITY" )
     private String city;
-
-    @Column( name = "D_STATE" )
     private String state;
-
-    @Column( name = "D_ZIP" )
     private String zip;
-
-    @Column( name = "D_TAX" )
     private double tax;
+    private double ytd;
 
-    public District(int id, int warehouseId, String name, String street, String street2, String city, String state, String zip, double tax) {
+    public WarehouseBean(int id, String name, String street1, String street2, String city, String state, String zip, double tax, double ytd) {
         this.id = id;
-        this.warehouseId = warehouseId;
         this.name = name;
-        this.street = street;
+        this.street1 = street1;
         this.street2 = street2;
         this.city = city;
         this.state = state;
         this.zip = zip;
         this.tax = tax;
+        this.ytd = ytd;
     }
 
     public int getId() {
@@ -57,14 +35,6 @@ public class District {
         this.id = id;
     }
 
-    public int getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(int warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
     public String getName() {
         return name;
     }
@@ -73,12 +43,12 @@ public class District {
         this.name = name;
     }
 
-    public String getStreet() {
-        return street;
+    public String getStreet1() {
+        return street1;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setStreet1(String street1) {
+        this.street1 = street1;
     }
 
     public String getStreet2() {
@@ -119,5 +89,13 @@ public class District {
 
     public void setTax(double tax) {
         this.tax = tax;
+    }
+
+    public double getYtd() {
+        return ytd;
+    }
+
+    public void setYtd(double ytd) {
+        this.ytd = ytd;
     }
 }

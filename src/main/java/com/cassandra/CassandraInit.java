@@ -10,8 +10,6 @@ public class CassandraInit {
 
     public static void main(String[] args) {
 
-
-
         DumpOrderData dump = new DumpOrderData();
         dump.dumpNewOrderTransactionData();
 
