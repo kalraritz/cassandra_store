@@ -1,5 +1,6 @@
 package com.cassandra.models;
 
+import com.cassandra.beans.Item;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.Frozen;
 import com.datastax.driver.mapping.annotations.Table;
@@ -39,9 +40,9 @@ public class Order {
 
     @Frozen
     @Column( name = "O_ITEMS" )
-    private Set<ItemOrders> items;
+    private Set<Item> items;
 
-    public Order(int warehouseId, int districtId, Long orderId, Date entryDate, Integer carrierId, Long customerId, int olCount, int oallLocal, Set<ItemOrders> items) {
+    public Order(int warehouseId, int districtId, Long orderId, Date entryDate, Integer carrierId, Long customerId, int olCount, int oallLocal, Set<Item> items) {
         this.warehouseId = warehouseId;
         this.districtId = districtId;
         this.orderId = orderId;
@@ -117,11 +118,11 @@ public class Order {
         this.oallLocal = oallLocal;
     }
 
-    public Set<ItemOrders> getItems() {
+    public Set<Item> getItems() {
         return items;
     }
 
-    public void setItems(Set<ItemOrders> items) {
+    public void setItems(Set<Item> items) {
         this.items = items;
     }
 }
