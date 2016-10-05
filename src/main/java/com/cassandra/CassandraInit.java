@@ -9,14 +9,9 @@ import com.datastax.driver.core.Session;
 public class CassandraInit {
 
     public static void main(String[] args) {
-
-
-
         DumpOrderData dump = new DumpOrderData();
         dump.dumpNewOrderTransactionData();
-
     }
-
 
     public Session cassandraInit()
     {
@@ -32,8 +27,7 @@ public class CassandraInit {
         }
         return session;
     }
-    //        dump.dumpNewOrderTransactionData();
+//        dump.dumpNewOrderTransactionData();
 //        dump.dumpNextOrderData();
 //        dump.test();
-
 }
