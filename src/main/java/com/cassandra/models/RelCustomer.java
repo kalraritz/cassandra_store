@@ -6,10 +6,11 @@ import com.datastax.driver.mapping.annotations.Table;
 import java.util.Date;
 
 /**
- * Created by Sachin on 9/28/2016.
+ * Created by manisha on 04/10/2016.
  */
-@Table(keyspace = "orders", name = "Customer")
-public class Customer {
+
+@Table(keyspace = "orders", name = "rel_customer")
+public class RelCustomer {
 
     @Column( name = "C_ID" )
     private int id;
@@ -45,13 +46,13 @@ public class Customer {
     private String zip;
 
     @Column( name = "C_PHONE" )
-    private String contact;
+    private String phone;
 
     @Column( name = "C_SINCE" )
     private Date since;
 
     @Column( name = "C_CREDIT" )
-    private double credit;
+    private String credit;
 
     @Column( name = "C_CREDIT_LIM" )
     private double creditLim;
@@ -59,8 +60,44 @@ public class Customer {
     @Column( name = "C_DISCOUNT" )
     private double discount;
 
+    @Column( name = "C_BALANCE" )
+    private double balance;
+
+    @Column( name = "C_YTD_PAYMENT" )
+    private float ytdPayment;
+
+    @Column( name = "C_PAYMENT_CNT" )
+    private int paymentCnt;
+
+    @Column( name = "C_DELIVERY_CNT" )
+    private int deliveryCnt;
+
     @Column( name = "C_DATA" )
     private String data;
+
+    public RelCustomer(int id, int warehouseId, int districtId, String firstName, String middleName, String lastName, String street1, String street2, String city, String state, String zip, String phone, Date since, String credit, double creditLim, double discount, double balance, float ytdPayment, int paymentCnt, int deliveryCnt, String data) {
+        this.id = id;
+        this.warehouseId = warehouseId;
+        this.districtId = districtId;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.street1 = street1;
+        this.street2 = street2;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.phone = phone;
+        this.since = since;
+        this.credit = credit;
+        this.creditLim = creditLim;
+        this.discount = discount;
+        this.balance = balance;
+        this.ytdPayment = ytdPayment;
+        this.paymentCnt = paymentCnt;
+        this.deliveryCnt = deliveryCnt;
+        this.data = data;
+    }
 
     public int getId() {
         return id;
@@ -150,12 +187,12 @@ public class Customer {
         this.zip = zip;
     }
 
-    public String getContact() {
-        return contact;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Date getSince() {
@@ -166,11 +203,11 @@ public class Customer {
         this.since = since;
     }
 
-    public double getCredit() {
+    public String getCredit() {
         return credit;
     }
 
-    public void setCredit(double credit) {
+    public void setCredit(String credit) {
         this.credit = credit;
     }
 
@@ -188,6 +225,38 @@ public class Customer {
 
     public void setDiscount(double discount) {
         this.discount = discount;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public float getYtdPayment() {
+        return ytdPayment;
+    }
+
+    public void setYtdPayment(float ytdPayment) {
+        this.ytdPayment = ytdPayment;
+    }
+
+    public int getPaymentCnt() {
+        return paymentCnt;
+    }
+
+    public void setPaymentCnt(int paymentCnt) {
+        this.paymentCnt = paymentCnt;
+    }
+
+    public int getDeliveryCnt() {
+        return deliveryCnt;
+    }
+
+    public void setDeliveryCnt(int deliveryCnt) {
+        this.deliveryCnt = deliveryCnt;
     }
 
     public String getData() {
