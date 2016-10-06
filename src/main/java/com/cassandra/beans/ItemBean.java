@@ -3,7 +3,7 @@ package com.cassandra.beans;
 /**
  * Created by manisha on 24/09/2016.
  */
-public class OldItem {
+public class ItemBean {
 
     private int id;
     private String name;
@@ -11,7 +11,7 @@ public class OldItem {
     private int imgId;
     private String data;
 
-    public OldItem(int id, String name, double price, int imgId, String data) {
+    public ItemBean(int id, String name, double price, int imgId, String data) {
         this.id = id;
         this.name = name;
         this.price = price;

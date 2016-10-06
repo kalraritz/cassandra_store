@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by manisha on 25/09/2016.
  */
-@Table(keyspace = "orders", name = "New_Order_Transaction")
+@Table(keyspace = "thehood", name = "New_Order_Transaction")
 public class Order {
 
     @Column( name = "O_W_ID" )

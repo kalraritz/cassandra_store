@@ -17,13 +17,32 @@ public class CassandraInit {
         if (session == null) {
             logger.error("Could not create a session");
             return;
+
         }
 
         // dump data
         new DumpWarehouse().dump();
-
+        DumpOrderData dump = new DumpOrderData();
+        dump.dumpNewOrderTransactionData();
+//        dump.dumNewOrderTransactionInBatches();
         CassandraSession.closeSession();
         System.out.println("Program Ended!");
         System.exit(0);
+    }
+
+
+
+
+    public Session cassandraInit() {
+        Cluster cluster = null;
+        Session session = null;
+        try {
+            cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
+            session = cluster.connect("thehood");
+            System.out.println(session.getCluster().getClusterName());
+        } catch (Exception e) {
+
+        }
+        return session;
     }
 }
