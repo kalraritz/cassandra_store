@@ -22,8 +22,6 @@ d_city text,
 d_state text,
 d_zip text,
 d_tax double,
-d_ytd double,
-d_next_o_id int,
 primary key (d_w_id, d_id)
 );
 

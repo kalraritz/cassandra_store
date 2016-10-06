@@ -7,7 +7,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * Created by Sachin on 9/28/2016.
  */
 
-@Table(keyspace = "orders", name = "District")
+@Table(keyspace = "thehood", name = "District")
 public class District {
 
     @Column( name = "D_ID" )
@@ -19,10 +19,10 @@ public class District {
     @Column( name = "D_NAME" )
     private String name;
 
-    @Column( name = "D_STREET1" )
+    @Column( name = "D_STREET_1" )
     private String street1;
 
-    @Column( name = "D_STREET2" )
+    @Column( name = "D_STREET_2" )
     private String street2;
 
     @Column( name = "D_CITY" )

@@ -22,36 +22,36 @@ public class DumpDistrict {
     private static Logger logger = Logger.getLogger(DumpDistrict.class);
 
     public void dump() {
-        /*Session session = CassandraSession.getSession();
+        Session session = CassandraSession.getSession();
         MappingManager manager = new MappingManager(session);
-        Mapper<Warehouse> mapper = manager.mapper(Warehouse.class);
+        Mapper<District> mapper = manager.mapper(District.class);
 
         // D_W_ID,D_ID,D_NAME,D_STREET_1,D_STREET_2,D_CITY,D_STATE,D_ZIP,D_TAX,D_YTD,D_NEXT_O_ID
         // 1,1,crobqijak,inapdxtqbxkvxpypsxb,jfzeqkdcgifsqq,rwbwegnnsoebotmunf,ZX,123456789,0.1319,30000.0,3001
         BatchStatement batch = new BatchStatement();
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStreamReader warehousefile = new InputStreamReader(classLoader.getResource("district.csv").openStream());
-            CSVReader warehousecsv = new CSVReader(warehousefile);
+            InputStreamReader districtfile = new InputStreamReader(classLoader.getResource("district.csv").openStream());
+            CSVReader districtcsv = new CSVReader(districtfile);
             String[] nextLine;
-            while ((nextLine = warehousecsv.readNext()) != null) {
-                if (nextLine.length < 8) {
+            while ((nextLine = districtcsv.readNext()) != null) {
+                if (nextLine.length < 9) {
                     logger.error("Error while parsing row " + nextLine + " in district table");
                 }
                 int id = Integer.parseInt(nextLine[0]);
                 int wid = Integer.parseInt(nextLine[1]);
-                double tax = Double.parseDouble(nextLine[7]);
-                District district = new District(id, wid, name, street, street2, city, state, zip, tax);
-                Statement statement = mapper.saveQuery(warehouse);
+                double tax = Double.parseDouble(nextLine[8]);
+                District district = new District(id, wid, nextLine[2], nextLine[3], nextLine[4], nextLine[5], nextLine[6], nextLine[7], tax);
+                Statement statement = mapper.saveQuery(district);
                 batch.add(statement);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        session.execute(batch);*/
+        logger.info("Dumped District");
+        session.execute(batch);
     }
 
 }

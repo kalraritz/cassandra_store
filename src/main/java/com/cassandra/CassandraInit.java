@@ -1,8 +1,7 @@
 package com.cassandra;
 
+import com.cassandra.dump.DumpDistrict;
 import com.cassandra.dump.DumpWarehouse;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -21,9 +20,10 @@ public class CassandraInit {
 
         // dump data
         new DumpWarehouse().dump();
+        new DumpDistrict().dump();
 
         CassandraSession.closeSession();
-        System.out.println("Program Ended!");
+        logger.info("Program Ended!");
         System.exit(0);
     }
 }

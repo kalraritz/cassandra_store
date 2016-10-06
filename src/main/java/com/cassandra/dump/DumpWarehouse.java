@@ -55,6 +55,7 @@ public class DumpWarehouse {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        logger.info("Dumped Warehouse");
         session.execute(batch);
     }
 }
