@@ -18,10 +18,7 @@ public final class CassandraSession {
     private static void createSession() throws Exception {
         Cluster cluster = Cluster.builder().addContactPoint("192.168.48.248").build();
         session = cluster.connect("thehood");
-        logger.info("Connected to " + session.getCluster().getClusterName());
-        for (Row row : session.execute("SELECT * FROM sql_warehouse")) {
-            logger.info(row);
-        }
+        logger.info("Session connected to " + session.getCluster().getClusterName());
     }
 
     public static Session getSession() {
@@ -38,6 +35,7 @@ public final class CassandraSession {
     public static void closeSession() {
         if (session != null) {
             session.close();
+            logger.info("Session closed to " + session.getCluster().getClusterName());
         }
     }
 }

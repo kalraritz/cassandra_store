@@ -2,6 +2,31 @@ create KEYSPACE thehood WITH replication = {'class': 'SimpleStrategy', 'replicat
 
 use thehood;
 
+create table warehouse(
+w_id int PRIMARY KEY,
+w_name text,
+w_street_1 text,
+w_street_2 text,
+w_city text,
+w_state text,
+w_zip text,
+w_tax double);
+
+create table district(
+d_w_id int,
+d_id int,
+d_name text,
+d_street_1 text,
+d_street_2 text,
+d_city text,
+d_state text,
+d_zip text,
+d_tax double,
+d_ytd double,
+d_next_o_id int,
+primary key (d_w_id, d_id)
+);
+
 create table sql_warehouse(
 w_id int PRIMARY KEY,
 w_name text,

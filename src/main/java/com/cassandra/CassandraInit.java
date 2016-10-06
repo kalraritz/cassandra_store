@@ -1,5 +1,6 @@
 package com.cassandra;
 
+import com.cassandra.dump.DumpWarehouse;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -10,16 +11,19 @@ public class CassandraInit {
     private static Logger logger = Logger.getLogger(CassandraSession.class);
 
     public static void main(String[] args) {
-        PropertyConfigurator.configure("target/classes/log4j.properties");
+        ClassLoader classLoader = CassandraInit.class.getClassLoader();
+        PropertyConfigurator.configure(classLoader.getResource("log4j.properties"));
         Session session = CassandraSession.getSession();
-
         if (session == null) {
             logger.error("Could not create a session");
             return;
         }
 
-        //
+        // dump data
+        new DumpWarehouse().dump();
 
         CassandraSession.closeSession();
+        System.out.println("Program Ended!");
+        System.exit(0);
     }
 }
