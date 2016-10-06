@@ -330,3 +330,27 @@ ol_i_id set<item>,
 primary key((o_w_id, o_d_id), o_c_id, o_id) 
 
 );
+
+CREATE TYPE item (
+  OL_I_ID int,
+  OL_I_NAME text,
+  OL_NUMBER int,
+  OL_S_W_ID int,
+  OL_QUANTITY int,
+  OL_DELIVERY_D timestamp,
+  OL_DIST_INFO text,
+  OL_AMOUNT double
+);
+
+
+CREATE TABLE New_Order_Transaction (
+  O_W_ID int,
+  O_D_ID int,
+  O_ID bigint,
+  O_ENTRY_D timestamp,
+  O_CARRIER_ID int,
+  O_C_ID bigint,
+  O_OL_CNT int,
+  O_ALL_LOCAL int,
+  O_ITEMS set<frozen <item>>,
+  PRIMARY KEY ((O_W_ID), O_D_ID, O_ID, O_ENTRY_D));

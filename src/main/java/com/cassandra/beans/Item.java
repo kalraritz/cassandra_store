@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Created by manisha on 24/09/2016.
  */
-@UDT(keyspace = "orders", name = "item")
+@UDT(keyspace = "thehood", name = "item")
 public class Item {
 
     @Field(name = "OL_I_ID")

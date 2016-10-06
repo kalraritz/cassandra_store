@@ -16,14 +16,19 @@ public class CassandraInit {
         if (session == null) {
             logger.error("Could not create a session");
             return;
+
         }
 
         // dump data
-        new DumpWarehouse().dump();
-        new DumpDistrict().dump();
+        // new DumpWarehouse().dump();
+        // new DumpDistrict().dump();
 
+        DumpOrderData dump = new DumpOrderData();
+        dump.dumpNewOrderTransactionData();
+//        dump.dumNewOrderTransactionInBatches();
         CassandraSession.closeSession();
         logger.info("Program Ended!");
         System.exit(0);
     }
+
 }
