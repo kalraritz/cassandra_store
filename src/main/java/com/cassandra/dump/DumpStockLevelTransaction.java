@@ -8,6 +8,8 @@ import com.datastax.driver.mapping.MappingManager;
 import com.opencsv.CSVReader;
 import org.apache.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
@@ -24,8 +26,10 @@ public class DumpStockLevelTransaction {
             MappingManager manager = new MappingManager(session);
             Mapper<StockTransaction> mapper = manager.mapper(StockTransaction.class);
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStreamReader stockFile = new InputStreamReader(classLoader.getResource("stock.csv").openStream());
-            CSVReader stockCsv = new CSVReader(stockFile);
+//            InputStreamReader stockFile = new InputStreamReader(classLoader.getResource("stock.csv").openStream());
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/order.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader stockCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = stockCsv.iterator();
             while(iterator.hasNext()) {
                 String[] stockRow = iterator.next();

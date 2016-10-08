@@ -10,6 +10,8 @@ import com.datastax.driver.mapping.MappingManager;
 import com.opencsv.CSVReader;
 import org.apache.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,8 +33,10 @@ public class DumpCustomer {
             Session session = CassandraSession.getSession();
             MappingManager manager = new MappingManager(session);
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStreamReader customerFile = new InputStreamReader(classLoader.getResource("customer.csv").openStream());
-            CSVReader customerCsv = new CSVReader(customerFile);
+//            InputStreamReader customerFile = new InputStreamReader(classLoader.getResource("customer.csv").openStream());
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/customer.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader customerCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = customerCsv.iterator();
             while(iterator.hasNext()) {
                 String[] customerRow = iterator.next();

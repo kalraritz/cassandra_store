@@ -32,8 +32,10 @@ public class DumpNewOrderTransaction {
             Session session = CassandraSession.getSession();
             MappingManager manager = new MappingManager(session);
             Mapper<Order> mapper = manager.mapper(Order.class);
-            InputStreamReader orderFile = new InputStreamReader(classLoader.getResource("order.csv").openStream());
-            CSVReader orderCsv = new CSVReader(orderFile);
+//            InputStreamReader orderFile = new InputStreamReader(classLoader.getResource("order.csv").openStream());
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/order.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader orderCsv = new CSVReader(inputStreamReader);
             List<Order> orders = new ArrayList<>();
             Iterator<String[]> iterator = orderCsv.iterator();
             int count = 0;

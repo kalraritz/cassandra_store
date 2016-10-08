@@ -12,6 +12,8 @@ import com.datastax.driver.mapping.MappingManager;
 import com.opencsv.CSVReader;
 import org.apache.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,8 +32,10 @@ public class DumpOrderStatusTransaction {
             MappingManager manager = new MappingManager(session);
             Mapper<OrderStatus> mapper = manager.mapper(OrderStatus.class);
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStreamReader orderFile = new InputStreamReader(classLoader.getResource("order.csv").openStream());
-            CSVReader orderCsv = new CSVReader(orderFile);
+//            InputStreamReader orderFile = new InputStreamReader(classLoader.getResource("order.csv").openStream());
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/order.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader orderCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = orderCsv.iterator();
             while(iterator.hasNext()) {
                 //Order csv row

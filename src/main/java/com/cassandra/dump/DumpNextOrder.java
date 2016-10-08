@@ -10,6 +10,8 @@ import com.datastax.driver.mapping.MappingManager;
 import com.opencsv.CSVReader;
 import org.apache.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +29,10 @@ public class DumpNextOrder {
             MappingManager manager = new MappingManager(session);
             Mapper<NextOrder> mapper = manager.mapper(NextOrder.class);
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStreamReader districtFile = new InputStreamReader(classLoader.getResource("district.csv").openStream());
-            CSVReader districtCsv = new CSVReader(districtFile);
+//            InputStreamReader districtFile = new InputStreamReader(classLoader.getResource("district.csv").openStream());
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/district.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader districtCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = districtCsv.iterator();
             while(iterator.hasNext()) {
                 String[] districtRow = iterator.next();

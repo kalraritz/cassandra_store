@@ -31,8 +31,10 @@ public class DumpWarehouse {
         BatchStatement batch = new BatchStatement();
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStreamReader warehousefile = new InputStreamReader(classLoader.getResource("warehouse.csv").openStream());
-            CSVReader warehousecsv = new CSVReader(warehousefile);
+//            InputStreamReader warehousefile = new InputStreamReader(classLoader.getResource("warehouse.csv").openStream());
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/warehouse.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader warehousecsv = new CSVReader(inputStreamReader);
             String[] nextLine;
             while ((nextLine = warehousecsv.readNext()) != null) {
                 if (nextLine.length < 8) {
