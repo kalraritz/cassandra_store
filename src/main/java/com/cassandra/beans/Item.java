@@ -22,7 +22,7 @@ public class Item {
     @Field(name = "OL_S_W_ID")
     private int olSuppWarehouseId;
     @Field(name = "OL_QUANTITY")
-    private int olQuantity;
+    private double olQuantity;
     @Field(name = "OL_DELIVERY_D")
     private Date olDeliveryDate;
     @Field(name = "OL_DIST_INFO")
@@ -30,7 +30,7 @@ public class Item {
     @Field(name = "OL_AMOUNT")
     private double olAmount;
 
-    public Item(int olItemId, String olItemName, int olNumber, int olSuppWarehouseId, int olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
+    public Item(int olItemId, String olItemName, int olNumber, int olSuppWarehouseId, double olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
         this.olItemId = olItemId;
         this.olItemName = olItemName;
         this.olNumber = olNumber;
@@ -38,70 +38,6 @@ public class Item {
         this.olQuantity = olQuantity;
         this.olDeliveryDate = olDeliveryDate;
         this.olDistInfo = olDistInfo;
-        this.olAmount = olAmount;
-    }
-
-    public int getOlItemId() {
-        return olItemId;
-    }
-
-    public void setOlItemId(int olItemId) {
-        this.olItemId = olItemId;
-    }
-
-    public String getOlItemName() {
-        return olItemName;
-    }
-
-    public void setOlItemName(String olItemName) {
-        this.olItemName = olItemName;
-    }
-
-    public int getOlNumber() {
-        return olNumber;
-    }
-
-    public void setOlNumber(int olNumber) {
-        this.olNumber = olNumber;
-    }
-
-    public int getOlSuppWarehouseId() {
-        return olSuppWarehouseId;
-    }
-
-    public void setOlSuppWarehouseId(int olSuppWarehouseId) {
-        this.olSuppWarehouseId = olSuppWarehouseId;
-    }
-
-    public int getOlQuantity() {
-        return olQuantity;
-    }
-
-    public void setOlQuantity(int olQuantity) {
-        this.olQuantity = olQuantity;
-    }
-
-    public Date getOlDeliveryDate() {
-        return olDeliveryDate;
-    }
-
-    public void setOlDeliveryDate(Date olDeliveryDate) {
-        this.olDeliveryDate = olDeliveryDate;
-    }
-
-    public String getOlDistInfo() {
-        return olDistInfo;
-    }
-
-    public void setOlDistInfo(String olDistInfo) {
-        this.olDistInfo = olDistInfo;
-    }
-
-    public double getOlAmount() {
-        return olAmount;
-    }
-
-    public void setOlAmount(double olAmount) {
         this.olAmount = olAmount;
     }
 }
