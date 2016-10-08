@@ -1,8 +1,8 @@
 package com.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.cassandra.beans.Item;
+import com.cassandra.beans.ItemCodec;
+import com.datastax.driver.core.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -11,13 +11,19 @@ import org.apache.log4j.Logger;
 public final class CassandraSession {
     private static Session session = null;
     private static Logger logger = Logger.getLogger(CassandraSession.class);
-
+    private static final String ip = "192.168.48.247";
     private CassandraSession() {
     }
 
     private static void createSession() throws Exception {
-        Cluster cluster = Cluster.builder().addContactPoint("192.168.48.248").build();
+        Cluster cluster = Cluster.builder().addContactPoint(ip).build();
         session = cluster.connect("thehood");
+//        CodecRegistry codecregisty = CodecRegistry.DEFAULT_INSTANCE;
+//        System.out.println(session.getCluster().getClusterName());
+//        UserType itemType = cluster.getMetadata().getKeyspace("thehood").getUserType("item");
+//        TypeCodec<UDTValue> itemTypeCodec = codecregisty.codecFor(itemType);
+//        ItemCodec itemcodec = new ItemCodec(itemTypeCodec, Item.class);
+//        codecregisty.register(itemcodec);
         logger.info("Session connected to " + session.getCluster().getClusterName());
     }
 

@@ -439,6 +439,14 @@ primary key((o_w_id, o_d_id), o_c_id, o_id)
 
 );
 
+-----------------
+CREATE TABLE Customer (C_W_ID int, C_D_ID int, C_ID bigint, C_FIRST text,
+C_MIDDLE text, C_LAST text, C_STREET_1 text, C_STREET_2 text, C_CITY text, C_STATE text, C_ZIP text,
+C_PHONE text, C_SINCE timestamp, C_CREDIT text, C_CREDIT_LIM double, C_DISCOUNT double, C_DATA text,
+PRIMARY KEY((C_W_ID), C_D_ID, C_ID));
+
+
+
 CREATE TYPE item (
   OL_I_ID int,
   OL_I_NAME text,

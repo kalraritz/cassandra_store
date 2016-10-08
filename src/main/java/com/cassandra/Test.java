@@ -13,7 +13,6 @@ import java.util.*;
 
 public class Test {
 
-
     private final ClassLoader classLoader;
 
     public Test() {

@@ -1,23 +1,18 @@
 package com.cassandra.dump;
 
-import com.cassandra.CassandraInit;
 import com.cassandra.CassandraSession;
-import com.cassandra.models.Order;
 import com.cassandra.models.Warehouse;
 import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.opencsv.CSVReader;
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
-import com.sun.tools.internal.ws.wscompile.Options;
+
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 
 /**
  * Created by ritesh on 05/10/16.

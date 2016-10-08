@@ -21,28 +21,29 @@ public class Order {
     private int districtId;
 
     @Column( name = "O_ID" )
-    private Long orderId;
+    private int orderId;
 
     @Column( name = "O_ENTRY_D" )
     private Date entryDate;
 
     @Column( name = "O_CARRIER_ID" )
-    private Integer carrierId;
+    private int carrierId;
 
     @Column( name = "O_C_ID" )
-    private Long customerId;
+    private int customerId;
 
     @Column( name = "O_OL_CNT" )
-    private int olCount;
+    private double olCount;
 
     @Column( name = "O_ALL_LOCAL" )
-    private int oallLocal;
+    private double oallLocal;
 
     @Frozen
     @Column( name = "O_ITEMS" )
     private Set<Item> items;
 
-    public Order(int warehouseId, int districtId, Long orderId, Date entryDate, Integer carrierId, Long customerId, int olCount, int oallLocal, Set<Item> items) {
+
+    public Order(int warehouseId, int districtId, int orderId, Date entryDate, int carrierId, int customerId, double olCount, double oallLocal, Set<Item> items) {
         this.warehouseId = warehouseId;
         this.districtId = districtId;
         this.orderId = orderId;
@@ -51,78 +52,6 @@ public class Order {
         this.customerId = customerId;
         this.olCount = olCount;
         this.oallLocal = oallLocal;
-        this.items = items;
-    }
-
-    public int getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(int warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public int getDistrictId() {
-        return districtId;
-    }
-
-    public void setDistrictId(int districtId) {
-        this.districtId = districtId;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Date getEntryDate() {
-        return entryDate;
-    }
-
-    public void setEntryDate(Date entryDate) {
-        this.entryDate = entryDate;
-    }
-
-    public Integer getCarrierId() {
-        return carrierId;
-    }
-
-    public void setCarrierId(Integer carrierId) {
-        this.carrierId = carrierId;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getOlCount() {
-        return olCount;
-    }
-
-    public void setOlCount(int olCount) {
-        this.olCount = olCount;
-    }
-
-    public int getOallLocal() {
-        return oallLocal;
-    }
-
-    public void setOallLocal(int oallLocal) {
-        this.oallLocal = oallLocal;
-    }
-
-    public Set<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(Set<Item> items) {
         this.items = items;
     }
 }

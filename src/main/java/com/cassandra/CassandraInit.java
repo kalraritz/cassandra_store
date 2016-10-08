@@ -1,7 +1,6 @@
 package com.cassandra;
 
-import com.cassandra.dump.DumpDistrict;
-import com.cassandra.dump.DumpWarehouse;
+import com.cassandra.dump.DumpNewOrderTransaction;
 import com.datastax.driver.core.Session;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -23,9 +22,10 @@ public class CassandraInit {
         // new DumpWarehouse().dump();
         // new DumpDistrict().dump();
 
-        DumpOrderData dump = new DumpOrderData();
-        dump.dumpNewOrderTransactionData();
-//        dump.dumNewOrderTransactionInBatches();
+        DumpNewOrderTransaction dump = new DumpNewOrderTransaction();
+//        dump.dumpNewOrderTransactionData();
+        dump.dumNewOrderTransactionInBatches();
+//        new DumpCustomer().dump();
         CassandraSession.closeSession();
         logger.info("Program Ended!");
         System.exit(0);
