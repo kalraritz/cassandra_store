@@ -26,7 +26,7 @@ public class DumpNewOrderTransaction {
         this.classLoader = getClass().getClassLoader();
     }
 
-    public void dumNewOrderTransactionInBatches() {
+    public void dump() {
 
         try {
             Session session = CassandraSession.getSession();
