@@ -10,7 +10,8 @@ w_street_2 text,
 w_city text,
 w_state text,
 w_zip text,
-w_tax double);
+w_tax double
+);
 
 create table district(
 d_w_id int,
@@ -23,6 +24,113 @@ d_state text,
 d_zip text,
 d_tax double,
 primary key (d_w_id, d_id)
+);
+
+create table stock(
+s_w_id int,
+s_i_id int,
+s_dist_01 text,
+s_dist_02 text,
+s_dist_03 text,
+s_dist_04 text,
+s_dist_05 text,
+s_dist_06 text,
+s_dist_07 text,
+s_dist_08 text,
+s_dist_09 text,
+s_dist_10 text,
+s_data text,
+s_i_name text,
+s_i_im_d int,
+s_i_im_price double,
+s_i_data text,
+primary key(s_w_id, s_i_id)
+);
+
+create table customer(
+c_w_id int,
+c_d_id int,
+c_id int,
+c_first text,
+c_middle text,
+c_last text,
+c_street_1 text,
+c_street_2 text,
+c_city text,
+c_state text,
+c_zip text,
+c_phone text,
+c_since timestamp,
+c_credit text,
+c_credit_lim double,
+c_discount double,
+c_data text,
+primary key (c_w_id, c_d_id, c_id)
+);
+
+create table customer_data(
+c_w_id int,
+c_d_id int,
+c_id int,
+c_balance double,
+c_ytd_payment double,
+c_payment_cnt int,
+c_delivery_cnt int,
+primary key (c_w_id, c_d_id, c_id, c_balance))
+with clustering order by (c_d_id asc, c_id asc, c_balance desc);
+
+create table next_order(
+no_w_id int,
+no_d_id int,
+no_d_next_o_id int,
+no_w_ytd double,
+no_d_ytd double,
+primary key (no_w_id, no_d_id)
+);
+
+create table stock_level_transaction(
+s_w_id int,
+s_i_id int,
+s_quantity double,
+s_ytd double,
+s_order_cnt int,
+s_remote_cnt int,
+primary key(s_w_id, s_i_id)
+);
+
+create type item (
+    i_id int,
+    ol_number int,
+    supply_w_id int,
+    i_amount double,
+    i_quantity double,
+    i_delivery_d timestamp,
+    i_dist_info text
+);
+
+create table new_order_transaction(
+o_w_id int,
+o_d_id int,
+o_id int,
+o_c_id int,
+o_entry_d timestamp,
+o_carrier_id int,
+o_ol_cnt double,
+o_all_local double,
+o_items set<frozen <item>>,
+primary key(o_w_id, o_d_id, o_id))
+with clustering order by(o_d_id asc, o_id asc);
+
+create table order_status_transaction(
+os_w_id int,
+os_d_id int,
+os_c_id int,
+os_o_id int,
+os_c_balance double,
+os_o_entry_d timestamp,
+os_o_carrier_id int,
+os_o_items set<frozen <item>>,
+primary key(os_w_id, os_d_id, os_c_id, os_o_id)
 );
 
 create table sql_warehouse(
