@@ -83,7 +83,7 @@ create table next_order(
 no_w_id int,
 no_d_id int,
 no_d_next_o_id int,
-no_w_ytd double,
+no_w_ytd double static,
 no_d_ytd double,
 primary key (no_w_id, no_d_id)
 );
