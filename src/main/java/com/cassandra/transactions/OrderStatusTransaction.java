@@ -18,27 +18,8 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 public class OrderStatusTransaction {
 	
-	public void readOrderStatus(int w_id,int d_id,int c_id)
+	public void readOrderStatus(int w_id,int d_id,int c_id,Session session)
 	{
-		Cluster cluster = null;
-		Session session = null;
-
-		try
-		{
-			cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-			session = cluster.connect("newdump");
-			CodecRegistry codecregisty = CodecRegistry.DEFAULT_INSTANCE;
-			System.out.println(session.getCluster().getClusterName());
-			UserType itemType = cluster.getMetadata().getKeyspace("newdump").getUserType("item");
-			TypeCodec<UDTValue> itemTypeCodec = codecregisty.codecFor(itemType);
-			ItemCodec itemcodec = new ItemCodec(itemTypeCodec, Item.class);
-			codecregisty.register(itemcodec);
-		}
-		catch(Exception e)
-		{
-			System.out.println("connect failed");
-		}
-		
 		try
 		{
 			Statement orderStatus = QueryBuilder.select().all().from("order_status_transaction")

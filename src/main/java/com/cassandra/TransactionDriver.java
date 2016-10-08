@@ -8,15 +8,11 @@
     import java.util.HashMap;
     import java.util.Map;
 
+    import com.cassandra.beans.Item;
     import com.cassandra.transactions.*;
+    import com.datastax.driver.core.*;
     import org.apache.log4j.BasicConfigurator;
 
-    import com.datastax.driver.core.BatchStatement;
-    import com.datastax.driver.core.Cluster;
-    import com.datastax.driver.core.Metadata;
-    import com.datastax.driver.core.PreparedStatement;
-    import com.datastax.driver.core.Session;
-    import com.datastax.driver.core.Statement;
     import org.apache.log4j.Logger;
     import org.apache.log4j.PropertyConfigurator;
 
@@ -30,7 +26,6 @@
         private static Cluster cluster;
         private static Session session;
         private static String keyspace;
-
         public static void main(String args[])
         {
             TransactionDriver t = new TransactionDriver();
@@ -42,7 +37,14 @@
         {
             ClassLoader classLoader = CassandraInit.class.getClassLoader();
             PropertyConfigurator.configure(classLoader.getResource("log4j.properties"));
-            Session session = CassandraSession.getSession();
+            session = CassandraSession.getSession();
+            CodecRegistry codecregisty = CodecRegistry.DEFAULT_INSTANCE;
+            System.out.println(session.getCluster().getClusterName());
+            UserType itemType = cluster.getMetadata().getKeyspace("newdump").getUserType("item");
+            TypeCodec<UDTValue> itemTypeCodec = codecregisty.codecFor(itemType);
+            ItemCodec itemcodec = new ItemCodec(itemTypeCodec, Item.class);
+            codecregisty.register(itemcodec);
+
             if (session == null) {
                 logger.error("Could not create a session");
                 return;
@@ -73,32 +75,32 @@
                                 d_id = Integer.parseInt(content[2]);
                                 c_id = Integer.parseInt(content[3]);
                                 payment = Double.parseDouble(content[4]);
-                                new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment);
+                                new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session);
                             case "D":
                                 w_id = Integer.parseInt(content[1]);
                                 carrier_id = Integer.parseInt(content[2]);
-                                new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id);
+                                new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
                             case "O":
                                 w_id = Integer.parseInt(content[1]);
                                 d_id = Integer.parseInt(content[2]);
                                 c_id = Integer.parseInt(content[3]);
-                                new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id);
+                                new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session);
                             case "S":
                                 w_id = Integer.parseInt(content[1]);
                                 d_id = Integer.parseInt(content[2]);
                                 threshold = Integer.parseInt(content[3]);
                                 lastLOrders = Integer.parseInt(content[4]);
-                                new StockLevelTransaction().checkStockThreshold(w_id,d_id,threshold,lastLOrders);
+                                new StockLevelTransaction().checkStockThreshold(w_id,d_id,threshold,lastLOrders,session);
                             case "I":
                                 w_id = Integer.parseInt(content[1]);
                                 d_id = Integer.parseInt(content[2]);
                                 lastLOrders = Integer.parseInt(content[4]);
-                                new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders);
+                                new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
                             case "T":
                                 w_id = Integer.parseInt(content[1]);
                                 d_id = Integer.parseInt(content[2]);
                                 c_id = Integer.parseInt(content[3]);
-                                new TopBalanceTransaction().gettopBalance(w_id,d_id,c_id);
+                                new TopBalanceTransaction().gettopBalance(w_id,d_id,c_id,session);
                         }
                     }
                 } catch (IOException e) {

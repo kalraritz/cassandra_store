@@ -20,25 +20,8 @@ import com.datastax.driver.core.UserType;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 public class DeliveryTransaction {
-	public void readDeliveryTransaction(int w_id,int carrier_id)
+	public void readDeliveryTransaction(int w_id,int carrier_id,Session session)
 	{
-		Cluster cluster = null;
-		Session session = null;
-		try
-		{
-			cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-			session = cluster.connect("newdump");
-			CodecRegistry codecregisty = CodecRegistry.DEFAULT_INSTANCE;
-			System.out.println(session.getCluster().getClusterName());
-			UserType itemType = cluster.getMetadata().getKeyspace("newdump").getUserType("item");
-			TypeCodec<UDTValue> itemTypeCodec = codecregisty.codecFor(itemType);
-			ItemCodec itemcodec = new ItemCodec(itemTypeCodec, Item.class);
-			codecregisty.register(itemcodec);
-		}
-		catch(Exception e)
-		{
-			System.out.println("connect failed");
-		}		
 		try
 		{
 			Statement getOrders = QueryBuilder.select().all().from("new_order_transaction")

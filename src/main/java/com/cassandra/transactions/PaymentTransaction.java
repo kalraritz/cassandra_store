@@ -3,18 +3,7 @@ package com.cassandra.transactions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TotalHitCountCollector;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import com.cassandra.models.Item;
+import com.cassandra.beans.Item;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.CodecRegistry;
 import com.datastax.driver.core.ResultSet;
@@ -24,28 +13,18 @@ import com.datastax.driver.core.TypeCodec;
 import com.datastax.driver.core.UDTValue;
 import com.datastax.driver.core.UserType;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 public class PaymentTransaction {
 	private final String luceneIndexFolder = "./lucene-index";
-	public void readOrderStatus(int w_id,int d_id,int c_id,double payment)
+	public void readOrderStatus(int w_id,int d_id,int c_id,double payment,Session session)
 	{
-		Cluster cluster = null;
-		Session session = null;
-		try
-		{
-			cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-			session = cluster.connect("newdump");
-			CodecRegistry codecregisty = CodecRegistry.DEFAULT_INSTANCE;
-			System.out.println(session.getCluster().getClusterName());
-			UserType itemType = cluster.getMetadata().getKeyspace("newdump").getUserType("item");
-			TypeCodec<UDTValue> itemTypeCodec = codecregisty.codecFor(itemType);
-			ItemCodec itemcodec = new ItemCodec(itemTypeCodec, Item.class);
-			codecregisty.register(itemcodec);
-		}
-		catch(Exception e)
-		{
-			System.out.println("connect failed");
-		}		
 		try
 		{
 			String ytdcolums[]={"w_ytd","d_ytd"};

@@ -19,24 +19,10 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 public class PopularItemTransaction {
 
 
-	public void checkPopularItem(int w_id,int d_id,int num_last_orders)
+	public void checkPopularItem(int w_id,int d_id,int num_last_orders,Session session)
 	{
-		Cluster cluster = null;
-		Session session = null;
 		final String[] columns_next_order = {"d_next_o_id"};
 		final String[] columns_stock = {"s_i_id","s_quantity"};
-
-		try
-		{
-			cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-			session = cluster.connect("orders");
-			System.out.println(session.getCluster().getClusterName());
-		}
-		catch(Exception e)
-		{
-			System.out.println("connect failed");
-		}
-
 		try
 		{
 			//Get the latest d_next_oid

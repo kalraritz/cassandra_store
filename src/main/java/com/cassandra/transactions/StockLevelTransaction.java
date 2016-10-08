@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.cassandra.models.Item;
+import com.cassandra.beans.Item;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -20,22 +20,8 @@ public class StockLevelTransaction {
 	final String[] columns_stock = {"s_i_id","s_quantity"};
 
 
-	public void checkStockThreshold(int w_id,int d_id,int threshold,int num_last_orders)
+	public void checkStockThreshold(int w_id,int d_id,int threshold,int num_last_orders,Session session)
 	{
-		Cluster cluster = null;
-		Session session = null;
-
-		try
-		{
-			cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-			session = cluster.connect("orders");
-			System.out.println(session.getCluster().getClusterName());
-		}
-		catch(Exception e)
-		{
-			System.out.println("connect failed");
-		}
-
 		try
 		{
 			//Get the latest d_next_oid

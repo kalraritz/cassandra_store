@@ -10,20 +10,8 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 public class TopBalanceTransaction {
 
 
-	public void gettopBalance(int w_id,int d_id,int c_id)
+	public void gettopBalance(int w_id,int d_id,int c_id,Session session)
 	{
-		Cluster cluster = null;
-		Session session = null;
-		try
-		{
-			cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-			session = cluster.connect("orders");
-			System.out.println(session.getCluster().getClusterName());
-		}
-		catch(Exception e)
-		{
-			System.out.println("connect failed");
-		}
 		try
 		{
 			Statement topBalance = QueryBuilder.select().all().from("custoner")
