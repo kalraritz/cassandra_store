@@ -17,6 +17,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,7 +29,7 @@ import java.util.List;
  */
 public class Lucene {
 
-    private static Logger logger = Logger.getLogger(DumpDistrict.class);
+    private static Logger logger = Logger.getLogger(Lucene.class);
     private final String luceneIndexFolder = "./lucene-index";
     public IndexWriter createIndex() throws Exception{
         IndexWriter indexWriter = null;
@@ -44,10 +46,12 @@ public class Lucene {
     }
 
     public void addDocumentToIndex(IndexWriter indexWriter, String csvFile, String csvType, String keyType) throws Exception {
-        logger.info("Adding "+csvFile+"data to index.....");
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStreamReader file = new InputStreamReader(classLoader.getResource(csvFile).openStream());
-        CSVReader csv = new CSVReader(file);
+        System.out.println("Adding "+csvFile+"data to index.....");
+//        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/"+csvFile);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+//        InputStreamReader file = new InputStreamReader(classLoader.getResource(csvFile).openStream());
+        CSVReader csv = new CSVReader(inputStreamReader);
         Iterator<String[]> iterator = csv.iterator();
         while(iterator.hasNext()){
             String key ="";
@@ -69,7 +73,7 @@ public class Lucene {
             document.add(new Field(csvType, String.join(",", row), TextField.TYPE_STORED));
             indexWriter.addDocument(document);
         }
-        logger.info("Added "+ csvFile+"data to index!!!");
+        System.out.println("Added "+ csvFile+"data to index!!!");
 
     }
 

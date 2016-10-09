@@ -45,7 +45,6 @@ public class ItemCodec extends TypeCodec<Item> {
     protected Item toAddress(UDTValue value) {
         return value == null ? null : new Item(
                 value.getInt("ol_i_id"),
-                value.getString("i_name"),
                 value.getInt("ol_number"),
                 value.getInt("ol_s_w_id"),
                 value.getInt("ol_quantity"),
@@ -58,7 +57,6 @@ public class ItemCodec extends TypeCodec<Item> {
     protected UDTValue toUDTValue(Item value) {
         return value == null ? null : userType.newValue()
                 .setInt("ol_i_id", value.getOlItemId())
-                .setString("i_name", value.getOlItemName())
                 .setInt("ol_number", value.getOlNumber())
                 .setInt("ol_s_w_id", value.getOlSuppWarehouseId())
                 .setDouble("ol_quantity", value.getOlQuantity())

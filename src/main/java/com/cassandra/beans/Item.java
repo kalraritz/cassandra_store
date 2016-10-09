@@ -15,8 +15,6 @@ public class Item {
 
     @Field(name = "OL_I_ID")
     private int olItemId;
-    @Field(name = "OL_I_NAME")
-    private String olItemName;
     @Field(name = "OL_NUMBER")
     private int olNumber;
     @Field(name = "OL_S_W_ID")
@@ -30,9 +28,8 @@ public class Item {
     @Field(name = "OL_AMOUNT")
     private double olAmount;
 
-    public Item(int olItemId, String olItemName, int olNumber, int olSuppWarehouseId, double olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
+    public Item(int olItemId, int olNumber, int olSuppWarehouseId, double olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {
         this.olItemId = olItemId;
-        this.olItemName = olItemName;
         this.olNumber = olNumber;
         this.olSuppWarehouseId = olSuppWarehouseId;
         this.olQuantity = olQuantity;
@@ -47,14 +44,6 @@ public class Item {
 
     public void setOlItemId(int olItemId) {
         this.olItemId = olItemId;
-    }
-
-    public String getOlItemName() {
-        return olItemName;
-    }
-
-    public void setOlItemName(String olItemName) {
-        this.olItemName = olItemName;
     }
 
     public int getOlNumber() {

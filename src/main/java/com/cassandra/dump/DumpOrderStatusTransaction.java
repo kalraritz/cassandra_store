@@ -61,7 +61,7 @@ public class DumpOrderStatusTransaction {
                             e.printStackTrace();
                         }
                     }
-                    Item item = new Item(Integer.parseInt(orderLineRow[4]), itemName, Integer.parseInt(orderLineRow[3]),
+                    Item item = new Item(Integer.parseInt(orderLineRow[4]), Integer.parseInt(orderLineRow[3]),
                     Integer.parseInt(orderLineRow[7]), Double.parseDouble(orderLineRow[8]), deliveryDate, orderLineRow[9],
                             Double.parseDouble(orderLineRow[6])
                     );

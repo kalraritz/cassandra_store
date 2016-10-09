@@ -27,7 +27,7 @@ public class Order {
     private Date entryDate;
 
     @Column( name = "O_CARRIER_ID" )
-    private int carrierId;
+    private Integer carrierId;
 
     @Column( name = "O_C_ID" )
     private int customerId;
