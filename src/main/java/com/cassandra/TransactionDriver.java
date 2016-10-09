@@ -71,6 +71,21 @@
                         int threshold = 0;int lastLOrders = 0;
                         switch(tranType)
                         {
+                            case "N":
+                                c_id = Integer.parseInt(content[1]);
+                                w_id = Integer.parseInt(content[2]);
+                                d_id = Integer.parseInt(content[3]);
+                                int m = Integer.parseInt(content[4]);
+                                ArrayList<String> itemlineinfo = new ArrayList<String>();
+                                // read m line
+                                while (m>0) {
+                                    --m;
+                                    String itemline = br.readLine();
+                                    if(itemline == null)
+                                        throw new RuntimeException("items empty before iteration line->" + line);
+                                    itemlineinfo.add(itemline);
+                                }
+                                new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session);
                             case "P":
                                 w_id = Integer.parseInt(content[1]);
                                 d_id = Integer.parseInt(content[2]);
