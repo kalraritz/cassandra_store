@@ -37,10 +37,10 @@ public class PopularItemTransaction {
 					.where(QueryBuilder.gte("o_id",start_index))
 					.and(QueryBuilder.lte("o_id",d_next_oid));
 			results= session.execute(getLastLOrders);
-			Set<Integer> itemids = new HashSet<Integer>();			
+			Set<Integer> itemids = new HashSet<Integer>();
 			Map<Integer,List<Integer>> orderItemsMapping = new HashMap<Integer,List<Integer>>();
 
-			
+
 			//Add itemids to a list to fetch the quantity for each item
 			//Create a map of order-items.
 			for(Row r:results.all()){
@@ -76,13 +76,13 @@ public class PopularItemTransaction {
 				int item_id = r.getInt("s_i_id");
 				orderItemQuantity.put(item_id,item_quantity);
 			}
-			
+
 			//Iterate over order-item map and get max item id for each order
 			for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet())
 			{
 			    System.out.println("Order Id : "+entry.getKey());
 			    System.out.println("Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity));
-			}	
+			}
 		}
 		catch(Exception e)
 		{}
@@ -90,7 +90,7 @@ public class PopularItemTransaction {
 
 	//Returns max item id
 	private int getMaxQuantity(List<Integer> value, Map<Integer, Integer> orderItemQuantity) {
-		
+
 		Iterator<Integer> it = value.iterator();
 		int max = Integer.MIN_VALUE;
 		int max_item_id = 0;

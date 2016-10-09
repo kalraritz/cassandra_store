@@ -40,4 +40,68 @@ public class Item {
         this.olDistInfo = olDistInfo;
         this.olAmount = olAmount;
     }
+
+    public int getOlItemId() {
+        return olItemId;
+    }
+
+    public void setOlItemId(int olItemId) {
+        this.olItemId = olItemId;
+    }
+
+    public String getOlItemName() {
+        return olItemName;
+    }
+
+    public void setOlItemName(String olItemName) {
+        this.olItemName = olItemName;
+    }
+
+    public int getOlNumber() {
+        return olNumber;
+    }
+
+    public void setOlNumber(int olNumber) {
+        this.olNumber = olNumber;
+    }
+
+    public int getOlSuppWarehouseId() {
+        return olSuppWarehouseId;
+    }
+
+    public void setOlSuppWarehouseId(int olSuppWarehouseId) {
+        this.olSuppWarehouseId = olSuppWarehouseId;
+    }
+
+    public double getOlQuantity() {
+        return olQuantity;
+    }
+
+    public void setOlQuantity(double olQuantity) {
+        this.olQuantity = olQuantity;
+    }
+
+    public Date getOlDeliveryDate() {
+        return olDeliveryDate;
+    }
+
+    public void setOlDeliveryDate(Date olDeliveryDate) {
+        this.olDeliveryDate = olDeliveryDate;
+    }
+
+    public String getOlDistInfo() {
+        return olDistInfo;
+    }
+
+    public void setOlDistInfo(String olDistInfo) {
+        this.olDistInfo = olDistInfo;
+    }
+
+    public double getOlAmount() {
+        return olAmount;
+    }
+
+    public void setOlAmount(double olAmount) {
+        this.olAmount = olAmount;
+    }
 }

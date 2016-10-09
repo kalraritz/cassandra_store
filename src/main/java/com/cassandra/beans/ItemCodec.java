@@ -61,7 +61,7 @@ public class ItemCodec extends TypeCodec<Item> {
                 .setString("i_name", value.getOlItemName())
                 .setInt("ol_number", value.getOlNumber())
                 .setInt("ol_s_w_id", value.getOlSuppWarehouseId())
-                .setInt("ol_quantity", value.getOlQuantity())
+                .setDouble("ol_quantity", value.getOlQuantity())
                 .setDate("ol_delivery_d", null)
                 .setString("ol_dist_info", value.getOlDistInfo())
                 .setDouble("ol_amount", value.getOlAmount())

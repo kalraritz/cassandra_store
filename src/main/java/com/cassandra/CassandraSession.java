@@ -1,7 +1,6 @@
 package com.cassandra;
 
 import com.cassandra.beans.Item;
-import com.cassandra.beans.ItemCodec;
 import com.datastax.driver.core.*;
 import org.apache.log4j.Logger;
 

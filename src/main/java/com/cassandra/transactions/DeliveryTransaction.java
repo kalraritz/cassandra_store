@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.cassandra.ItemCodec;
 import com.cassandra.beans.Item;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.CodecRegistry;

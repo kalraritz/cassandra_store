@@ -9,6 +9,7 @@
     import java.util.Map;
 
     import com.cassandra.beans.Item;
+    import com.cassandra.beans.ItemCodec;
     import com.cassandra.transactions.*;
     import com.datastax.driver.core.*;
     import org.apache.log4j.BasicConfigurator;
