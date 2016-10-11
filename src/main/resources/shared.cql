@@ -470,3 +470,12 @@ CREATE TABLE New_Order_Transaction (
   O_ALL_LOCAL int,
   O_ITEMS set<frozen <item>>,
   PRIMARY KEY ((O_W_ID), O_D_ID, O_ID, O_ENTRY_D));
+
+
+
+# Ritesh added dump commands
+copy thehood.customer_data (c_w_id,c_d_id,c_id,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt) from '~/csvFiles/customerData.csv';
+copy thehood.warehouse(w_id,w_name,w_street_1,w_street_2,w_city,w_state,w_zip,w_tax) from '~/csvFiles/warehouse.csv';
+copy thehood.district(d_w_id, d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax) from '~/csvFiles/district.csv';
+copy thehood.stock(s_w_id,s_i_id,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data,s_i_name,s_i_im_d,s_i_im_price,s_i_data) from '~/csvFiles/stock.csv';
+
