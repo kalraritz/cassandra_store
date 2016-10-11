@@ -14,10 +14,13 @@ import java.util.*;
  */
 public class OrderStatusTransactionCsv {
 
+    private static Logger logger = Logger.getLogger(OrderStatusTransactionCsv.class);
 
     public void prepareCsv() {
+        PrintWriter pw = null;
+        logger.info("Preparing csv for OrderStatusTransaction....");
         try {
-            PrintWriter pw = new PrintWriter(new File("/Users/manisha/NUS/DD/project/csvFiles/orderStatusTransaction.csv"));
+            pw = new PrintWriter(new File("/Users/manisha/NUS/DD/project/csvFiles/orderStatusTransaction.csv"));
             ClassLoader classLoader = getClass().getClassLoader();
             InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/order.csv");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -26,19 +29,19 @@ public class OrderStatusTransactionCsv {
             CSVReader orderCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = orderCsv.iterator();
             while(iterator.hasNext()) {
-                List<String> orderStatusList = new ArrayList<>();
+                List<String> orderStatusRowList = new ArrayList<>();
                 String[] orderRow = iterator.next();
-                orderStatusList.add(orderRow[0]); // w_id
-                orderStatusList.add(orderRow[1]); //d_id
-                orderStatusList.add(orderRow[3]); //c_id
-                orderStatusList.add(orderRow[2]); //o_id
+                orderStatusRowList.add(orderRow[0]); // w_id
+                orderStatusRowList.add(orderRow[1]); //d_id
+                orderStatusRowList.add(orderRow[3]); //c_id
+                orderStatusRowList.add(orderRow[2]); //o_id
                 List<String> customer = new Lucene().search(orderRow[0]+orderRow[1]+orderRow[3], "customer-id", "customer-csv");
                 String[] customerRow = customer.get(0).split(",");
-                orderStatusList.add(customerRow[16]); //c_balance
-                orderStatusList.add(orderRow[7]); // entryDate
+                orderStatusRowList.add(customerRow[16]); //c_balance
+                orderStatusRowList.add(orderRow[7]); // entryDate
                 if(orderRow[4].equals("null"))
                     orderRow[4] = "";
-                orderStatusList.add(orderRow[4]); //carrier_id
+                orderStatusRowList.add(orderRow[4]); //carrier_id
                 List<String> orderItems = new Lucene().search(orderRow[0]+orderRow[1]+orderRow[2], "order-id", "order-line-csv");
                 List<String> orderItemList = new ArrayList<>();
                 for(String string: orderItems){
@@ -49,17 +52,19 @@ public class OrderStatusTransactionCsv {
                 orderItemList.add(str);
                 }
                 String itemSet = "{"+ StringUtils.join(orderItemList, ",") +"}";
-                orderStatusList.add(itemSet);
-                String str = StringUtils.join(orderStatusList, ",");
+                orderStatusRowList.add(itemSet);
+                String str = StringUtils.join(orderStatusRowList, ",");
                 pw.write(str+ "\n");
                 pw.flush();
             }
-            pw.close();
-            System.out.println("done preparing order Status transaction csv!!");
+
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error in  preparing CustomerData csv");
+           logger.error("Error in  preparing orderStatusTransaction csv");
 
+        } finally {
+            pw.close();
+            logger.info("done preparing orderStatusTransaction csv!!");
         }
     }
 

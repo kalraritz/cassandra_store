@@ -18,34 +18,37 @@ public class CustomerDataCsv {
     private static Logger logger = Logger.getLogger(CustomerDataCsv.class);
 
     public void prepareCsv() {
-    try {
-        PrintWriter pw = new PrintWriter(new File("/Users/manisha/NUS/DD/project/csvFiles/customerData.csv"));
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/customer.csv");
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        CSVReader customerCsv = new CSVReader(inputStreamReader);
-        Iterator<String[]> iterator = customerCsv.iterator();
-        while(iterator.hasNext()) {
-            String[] customerRow = iterator.next();
-            List<String> list = new ArrayList<>();
-            list.add(customerRow[0]);
-            list.add(customerRow[1]);
-            list.add(customerRow[2]);
-            list.add(customerRow[16]);
-            list.add(customerRow[17]);
-            list.add(customerRow[18]);
-            list.add(customerRow[19]);
-            String str = StringUtils.join(list, ",");
-            pw.write(str+"\n");
-            pw.flush();
+        PrintWriter pw = null;
+        logger.info("Preparing csv for CustomerData...");
+        try {
+            pw = new PrintWriter(new File("/Users/manisha/NUS/DD/project/csvFiles/customerData.csv"));
+            InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/customer.csv");
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            CSVReader customerCsv = new CSVReader(inputStreamReader);
+            Iterator<String[]> iterator = customerCsv.iterator();
+            while (iterator.hasNext()) {
+                String[] customerRow = iterator.next();
+                List<String> customerDataRowList = new ArrayList<>();
+                customerDataRowList.add(customerRow[0]);
+                customerDataRowList.add(customerRow[1]);
+                customerDataRowList.add(customerRow[2]);
+                customerDataRowList.add(customerRow[16]);
+                customerDataRowList.add(customerRow[17]);
+                customerDataRowList.add(customerRow[18]);
+                customerDataRowList.add(customerRow[19]);
+                String str = StringUtils.join(customerDataRowList, ",");
+                pw.write(str + "\n");
+                pw.flush();
 
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Error in  preparing CustomerData csv");
+        } finally {
+            pw.close();
+            logger.info("done preparing CustomerData csv!!");
         }
-        pw.close();
-        logger.info("done preparing CustomerData csv!!");
-    } catch (Exception e) {
-        e.printStackTrace();
-        logger.error("Error in  preparing CustomerData csv");
-    }
     }
 
 }

@@ -27,7 +27,7 @@ public class DumpStockLevelTransaction {
             Mapper<StockTransaction> mapper = manager.mapper(StockTransaction.class);
             ClassLoader classLoader = getClass().getClassLoader();
 //            InputStreamReader stockFile = new InputStreamReader(classLoader.getResource("stock.csv").openStream());
-            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/order.csv");
+            InputStream inputStream = new FileInputStream("/home/m/manisha/D8-data/stock.csv");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             CSVReader stockCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = stockCsv.iterator();
