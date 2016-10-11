@@ -63,7 +63,7 @@ public class NewOrderTransaction {
             // OL I ID,OL SUPPLY W ID,OL QUANTITY
             double all_local = 1;
 
-            for(ArrayList<Integer> it: items) {
+            for(Item it: items) {
                 if(it.get(1) != w_id) {
                     all_local = 0;
                     break;
