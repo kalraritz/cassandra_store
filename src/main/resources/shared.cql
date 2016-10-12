@@ -121,6 +121,7 @@ o_items set<frozen <item>>,
 primary key(o_w_id, o_d_id, o_id))
 with clustering order by(o_d_id asc, o_id asc);
 
+/*
 create table order_status_transaction(
 os_w_id int,
 os_d_id int,
@@ -132,6 +133,7 @@ os_o_carrier_id int,
 os_o_items set<frozen <item>>,
 primary key(os_w_id, os_d_id, os_c_id, os_o_id)
 );
+*/
 
 create table sql_warehouse(
 w_id int PRIMARY KEY,
@@ -474,8 +476,12 @@ CREATE TABLE New_Order_Transaction (
 
 
 # Ritesh added dump commands
-copy thehood.customer_data (c_w_id,c_d_id,c_id,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt) from '~/csvFiles/customerData.csv';
 copy thehood.warehouse(w_id,w_name,w_street_1,w_street_2,w_city,w_state,w_zip,w_tax) from '~/csvFiles/warehouse.csv';
 copy thehood.district(d_w_id, d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax) from '~/csvFiles/district.csv';
 copy thehood.stock(s_w_id,s_i_id,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data,s_i_name,s_i_im_d,s_i_im_price,s_i_data) from '~/csvFiles/stock.csv';
-
+copy thehood.customer(c_w_id,c_d_id,c_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_data) from '~/csvFiles/customer.csv';
+copy thehood.customer_data (c_w_id,c_d_id,c_id,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt) from '~/csvFiles/customerData.csv';
+copy new_order_transaction(o_w_id,o_d_id,o_id,o_c_id,o_entry_d,o_carrier_id,o_ol_cnt,o_all_local,o_items) from '~/csvFiles/newOrderTransaction.csv';
+copy order_status_transaction() from '~/csvFiles/';
+copy stock_level_transaction() from '~/csvFiles/';
+copy next_order() from '~/csvFiles/';

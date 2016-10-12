@@ -4,3 +4,5 @@ __MACOSX
 .idea/
 # target
 target/
+# ignore lucene
+lucene-index

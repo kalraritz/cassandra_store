@@ -6,14 +6,14 @@ package com.cassandra.csv;
 public class CsvLoader {
 
     public static void main(String[] args){
-        new CustomerDataCsv().prepareCsv();
-        new OrderStatusTransactionCsv().prepareCsv();
+//        new CustomerDataCsv().prepareCsv();
+//        new OrderStatusTransactionCsv().prepareCsv();
         new NewOrderTransactionCsv().prepareCsv();
-        new NextOrderCsv().prepareCsv();
-        new StockLevelTransactionCsv().prepareCsv();
-        new WarehouseCsv().prepareCsv();
-        new DistrictCsv().prepareCsv();
-        new CustomerCsv().prepareCsv();
-        new StockCsv().prepareCsv();
+//        new NextOrderCsv().prepareCsv();
+//        new StockLevelTransactionCsv().prepareCsv();
+//        new WarehouseCsv().prepareCsv();
+//        new DistrictCsv().prepareCsv();
+//        new CustomerCsv().prepareCsv();
+//        new StockCsv().prepareCsv();
     }
 }

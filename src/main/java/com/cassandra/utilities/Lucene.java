@@ -48,7 +48,7 @@ public class Lucene {
     public void addDocumentToIndex(IndexWriter indexWriter, String csvFile, String csvType, String keyType) throws Exception {
         System.out.println("Adding "+csvFile+"data to index.....");
 //        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/"+csvFile);
+        InputStream inputStream = new FileInputStream("/Users/ritesh/Documents/D8-data/"+csvFile);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 //        InputStreamReader file = new InputStreamReader(classLoader.getResource(csvFile).openStream());
         CSVReader csv = new CSVReader(inputStreamReader);
@@ -108,6 +108,7 @@ public class Lucene {
             lucene.addDocumentToIndex(indexWriter, "customer.csv", "customer-csv", "customer-id");
             lucene.addDocumentToIndex(indexWriter, "stock.csv", "stock-csv", "stock-id");
             indexWriter.close();
+            System.exit(0);
 
 //            lucene.search("111", "order-id", "order-line-csv");
         } catch (Exception e) {
