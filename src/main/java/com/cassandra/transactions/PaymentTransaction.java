@@ -4,14 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import com.cassandra.beans.Item;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.CodecRegistry;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
-import com.datastax.driver.core.TypeCodec;
-import com.datastax.driver.core.UDTValue;
-import com.datastax.driver.core.UserType;
+import com.cassandra.utilities.Lucene;
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -25,6 +19,7 @@ public class PaymentTransaction {
 	private final String luceneIndexFolder = "./lucene-index";
 	public void readOrderStatus(int w_id,int d_id,int c_id,double payment,Session session)
 	{
+		Lucene index = new Lucene();
 		try
 		{
 			String ytdcolums[]={"w_ytd","d_ytd"};
@@ -32,31 +27,32 @@ public class PaymentTransaction {
 					.where(QueryBuilder.eq("w_id",w_id))
 					.and(QueryBuilder.eq("d_id",d_id));
 
-			ResultSet results= session.execute(getYTDInfo);
-			double d_ytd = results.one().getDouble("d_ytd");
-			double w_ytd = results.one().getDouble("w_ytd");
+			Row results= session.execute(getYTDInfo).one();
+
+			double d_ytd = results.getDouble("d_ytd");
+			double w_ytd = results.getDouble("w_ytd");
 			QueryBuilder.update("payment_transaction").with(QueryBuilder.set("w_ytd",w_ytd + payment ))
-			.and(QueryBuilder.set("d_ytd", d_ytd + payment))
-			.where(QueryBuilder.eq("w_id", d_id))
-			.and(QueryBuilder.eq("d_id",d_id));
+					.and(QueryBuilder.set("d_ytd", d_ytd + payment))
+					.where(QueryBuilder.eq("w_id", d_id))
+					.and(QueryBuilder.eq("d_id",d_id));
 
 			String customercolums[]={"c_balance","c_ytd","c_payment"};
 			Statement customerInfo = QueryBuilder.select(customercolums).from("customer")
 					.where(QueryBuilder.eq("w_id",w_id))
 					.and(QueryBuilder.eq("d_id",d_id))
 					.and(QueryBuilder.eq("c_id",c_id));
-			results= session.execute(customerInfo);
-			double c_balance = results.one().getDouble("c_balance");
-			double c_ytd = results.one().getDouble("c_ytd");
-			double c_payment = results.one().getDouble("c_payment");
+			results= session.execute(customerInfo).one();
+			double c_balance = results.getDouble("c_balance");
+			double c_ytd = results.getDouble("c_ytd");
+			double c_payment = results.getDouble("c_payment");
 			QueryBuilder.update("customer").with(QueryBuilder.set("c_balance",c_balance - payment ))
-			.and(QueryBuilder.set("c_ytd", c_ytd + payment))
-			.and(QueryBuilder.set("c_payment", c_payment + 1))
-			.where(QueryBuilder.eq("w_id",w_id))
-			.and(QueryBuilder.eq("d_id",d_id))
-			.and(QueryBuilder.eq("c_id",c_id));
+					.and(QueryBuilder.set("c_ytd", c_ytd + payment))
+					.and(QueryBuilder.set("c_payment", c_payment + 1))
+					.where(QueryBuilder.eq("w_id",w_id))
+					.and(QueryBuilder.eq("d_id",d_id))
+					.and(QueryBuilder.eq("c_id",c_id));
 
-			String customerStaticInfo = new PaymentTransaction().search(w_id+ "" + d_id+""+c_id, "customer-id", "customer-csv").get(0);
+			String customerStaticInfo = index.search(w_id+ "" + d_id+""+c_id, "customer-id", "customer-csv").get(0);
 			String indexData[] = customerStaticInfo.split(",");
 			System.out.println("Customer Identifier : "+w_id+""+d_id+""+c_id);
 			System.out.println("Customer name : " +indexData[3]+" "+indexData[4]+" "+indexData[5]);
@@ -73,14 +69,14 @@ public class PaymentTransaction {
 			System.out.println("Customer outstanding balance : "+indexData[18]);
 
 
-			String warehouseStaticInfo = new PaymentTransaction().search(w_id+"", "warehouse-id", "warehouse-csv").get(0);
+			String warehouseStaticInfo = index.search(w_id+"", "warehouse-id", "warehouse-csv").get(0);
 			indexData = warehouseStaticInfo.split(",");
-			System.out.println("Warehouse address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " " 
+			System.out.println("Warehouse address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
 					+ indexData[5]+ " " + indexData[6]);
 
-			String districtStaticInfo = new PaymentTransaction().search(w_id+""+d_id, "district-id", "district-csv").get(0);
+			String districtStaticInfo = index.search(w_id+""+d_id, "district-id", "district-csv").get(0);
 			indexData = districtStaticInfo.split(",");
-			System.out.println("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " " 
+			System.out.println("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
 					+ indexData[5]+ " " + indexData[6]);
 
 			System.out.println("Payment amount : "+payment);
@@ -89,25 +85,5 @@ public class PaymentTransaction {
 		{
 			e.printStackTrace();
 		}
-	}
-
-	public List<String> search(String searchQuery, String keyType, String csvType) throws Exception{
-		File file = new File(luceneIndexFolder);
-		Directory directory = FSDirectory.open(file.toPath());
-		DirectoryReader ireader = DirectoryReader.open(directory);
-		IndexSearcher isearcher = new IndexSearcher(ireader);
-
-		QueryParser parser = new QueryParser(keyType, new StandardAnalyzer());
-		Query query = parser.parse(searchQuery);
-		TotalHitCountCollector collector = new TotalHitCountCollector();
-		isearcher.search(query, collector);
-		TopDocs topDocs = isearcher.search(query, Math.max(1, collector.getTotalHits()));
-		ScoreDoc[] hits = isearcher.search(query, topDocs.totalHits).scoreDocs;
-		List<String> items = new ArrayList<>();
-		for (int i = 0; i < hits.length; i++) {
-			Document hitDoc = isearcher.doc(hits[i].doc);
-			items.add(hitDoc.getField(csvType).stringValue());
-		}
-		return items;
 	}
 }

@@ -16,10 +16,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +45,7 @@ public class Lucene {
     public void addDocumentToIndex(IndexWriter indexWriter, String csvFile, String csvType, String keyType) throws Exception {
         System.out.println("Adding "+csvFile+"data to index.....");
 //        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = new FileInputStream("/Users/ritesh/Documents/D8-data/"+csvFile);
+        InputStream inputStream = new FileInputStream("C:/DD/D8-data/"+csvFile);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 //        InputStreamReader file = new InputStreamReader(classLoader.getResource(csvFile).openStream());
         CSVReader csv = new CSVReader(inputStreamReader);
@@ -77,15 +74,30 @@ public class Lucene {
 
     }
 
+    public void initSearch()
+    {
+        try {
+            File file = new File(luceneIndexFolder);
+            Directory directory = FSDirectory.open(file.toPath());
+            DirectoryReader ireader = DirectoryReader.open(directory);
+            isearcher = new IndexSearcher(ireader);
+            collector = new TotalHitCountCollector();
+        }
+        catch (IOException e)
+        {
+
+        }
+
+    }
+
+    static IndexSearcher isearcher;
+    static TotalHitCountCollector collector;
+
+
     public List<String> search(String searchQuery, String keyType, String csvType) throws Exception{
-        File file = new File(luceneIndexFolder);
-        Directory directory = FSDirectory.open(file.toPath());
-        DirectoryReader ireader = DirectoryReader.open(directory);
-        IndexSearcher isearcher = new IndexSearcher(ireader);
 
         QueryParser parser = new QueryParser(keyType, new StandardAnalyzer());
         Query query = parser.parse(searchQuery);
-        TotalHitCountCollector collector = new TotalHitCountCollector();
         isearcher.search(query, collector);
         TopDocs topDocs = isearcher.search(query, Math.max(1, collector.getTotalHits()));
         ScoreDoc[] hits = isearcher.search(query, topDocs.totalHits).scoreDocs;
@@ -108,7 +120,6 @@ public class Lucene {
             lucene.addDocumentToIndex(indexWriter, "customer.csv", "customer-csv", "customer-id");
             lucene.addDocumentToIndex(indexWriter, "stock.csv", "stock-csv", "stock-id");
             indexWriter.close();
-            System.exit(0);
 
 //            lucene.search("111", "order-id", "order-line-csv");
         } catch (Exception e) {

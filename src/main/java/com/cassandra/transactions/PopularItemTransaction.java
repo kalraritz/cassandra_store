@@ -80,8 +80,8 @@ public class PopularItemTransaction {
 			//Iterate over order-item map and get max item id for each order
 			for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet())
 			{
-			    System.out.println("Order Id : "+entry.getKey());
-			    System.out.println("Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity));
+				System.out.println("Order Id : "+entry.getKey());
+				System.out.println("Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity));
 			}
 		}
 		catch(Exception e)

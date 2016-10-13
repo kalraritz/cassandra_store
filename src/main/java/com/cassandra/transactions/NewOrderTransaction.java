@@ -17,10 +17,8 @@ import java.util.*;
 public class NewOrderTransaction {
 
 
-    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session)
-    {
-        try
-        {
+    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session) {
+        try {
             // put the order in order status trasaction
             // put the order status transaction
             // update customer data
@@ -28,8 +26,8 @@ public class NewOrderTransaction {
             // update stock level
             final String[] columns_next_order = {"d_next_o_id"};
             Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-                    .where(QueryBuilder.eq("o_w_id",w_id)).and(QueryBuilder.eq("o_d_id",d_id));
-            ResultSet results= session.execute(getDNextOID);
+                    .where(QueryBuilder.eq("w_id", w_id)).and(QueryBuilder.eq("d_id", d_id));
+            ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("d_next_o_id");
 
             LinkedList<String> columns = new LinkedList<String>();
@@ -50,166 +48,69 @@ public class NewOrderTransaction {
             values.add(new Date());
             values.add(null);
             values.add(itemlineinfo.size());
-            HashSet<Item> items = new HashSet<Item>();
-            int itemnum = 0;
-            /*for(String item: itemlineinfo) {
-                String[] itemline = item.split(",");
-                String[] itemRow = litem.get(0).split(",");
-                Item eachitem = new Item(Integer.parseInt(itemline[0]), itemRow[1], ++itemnum, Integer.parseInt(itemline[1]), Double.parseDouble(itemline[2]), null, );
-                for(String itm:its)
-                    eachitem(Integer.parseInt(itm));
-                items.add(eachitem);
-            }*/
-            // OL I ID,OL SUPPLY W ID,OL QUANTITY
             double all_local = 1;
+            int itemnum = 0;
+            Set<Item> items = new HashSet<>();
+            Lucene index = new Lucene();
+            int ol_i_id = 0;
+            double total_amount = 0.0;
 
-            for(Item it: items) {
-                if(it.get(1) != w_id) {
+            for (String item : itemlineinfo) {
+
+                String[] itemline = item.split(",");
+
+                //Order line info update
+                String[] itemStaticInfo = index.search(itemline[0] + "", "item-id", "item-csv").get(0).split(",");
+                ol_i_id = Integer.parseInt(itemline[0]);
+                int ol_supply_w_id = Integer.parseInt(itemline[1]);
+                double ol_quantity = Double.parseDouble(itemline[2]);
+                double itemPrice = Double.parseDouble(itemStaticInfo[3]);
+                Item eachitem = new Item(ol_i_id, ++itemnum, ol_supply_w_id, ol_quantity, null, "", itemPrice * ol_quantity);
+                items.add(eachitem);
+                total_amount += itemPrice * ol_quantity;
+                if (ol_supply_w_id != w_id) {
                     all_local = 0;
-                    break;
                 }
+
+
+                //Stock info update
+                String[] stockStaticInfo = index.search(w_id + "" + ol_i_id + "", "stock-id", "stock-csv").get(0).split(",");
+                double stockQuantity = Double.parseDouble(stockStaticInfo[2]);
+                double adjustedQuantiy = stockQuantity - ol_quantity;
+                if (adjustedQuantiy < 10) {
+                    adjustedQuantiy = adjustedQuantiy + 100;
+                }
+
+                Statement stockInfo = QueryBuilder.select().all().from("stock_level_transaction")
+                        .where(QueryBuilder.eq("s_w_id", w_id))
+                        .and(QueryBuilder.eq("s_i_id", ol_i_id));
+
+                Row stockInfoResults = session.execute(stockInfo).one();
+
+                double s_ytd = stockInfoResults.getDouble("s_ytd");
+                int s_order_cnt = stockInfoResults.getInt("s_order_cnt");
+                int s_remote_cnt = stockInfoResults.getInt("s_remote_cnt");
+                QueryBuilder.update("stock_level_transaction").with(QueryBuilder.set("s_quantity", adjustedQuantiy))
+                        .and(QueryBuilder.set("s_ytd", s_ytd + ol_quantity))
+                        .and(QueryBuilder.set("s_order_cnt", s_order_cnt + 1))
+                        .and(QueryBuilder.set("s_remote_cnt", s_remote_cnt + 1))
+                        .where(QueryBuilder.eq("w_id", d_id))
+                        .and(QueryBuilder.eq("s_i_id", ol_i_id));
             }
             values.add(all_local);
-            HashSet<Item> items = new HashSet<Item>();
-            values.add();
+            values.add(items);
+            Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values(columns, values);
 
-            Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values()
 
-            Statement orderStatus = QueryBuilder.select().all().from("order_status_transaction")
-                    .where(QueryBuilder.eq("o_w_id",w_id))
-                    .and(QueryBuilder.eq("o_d_id",d_id))
-                    .and(QueryBuilder.eq("o_c_id",c_id))
-                    .limit(1);
-            ResultSet results= session.execute(orderStatus);
+            String[] districtStaticInfo = index.search(w_id + "" + d_id + "", "district-id", "district-csv").get(0).split(",");
+            String[] warehouseStaticInfo = index.search(w_id + "", "warehouse-id", "warehouse-csv").get(0).split(",");
+            String[] customerStaticInfo = index.search(w_id + "" + d_id + "" + c_id + "", "customer-id", "customer-csv").get(0).split(",");
 
-            for(Row r:results.all()){
-                System.out.println("Customer name : "+r.getString("c_first")
-                        +r.getString("c_middle")+r.getString("c_last"));
-                System.out.println(r.getDouble("c_balance"));
-                Set<Item> orders = r.getSet("ol_i_id",Item.class);
-                Iterator<Item> order_items = orders.iterator();
-                while(order_items.hasNext())
-                {
-                    Item item = order_items.next();
-                    System.out.println("Item number: "+item.getOlItemId());
-                    System.out.println("Warehouse number: "+item.getOlSuppWarehouseId());
-                    System.out.println("Quantity number: "+item.getOlQuantity());
-                    System.out.println("Total price: "+item.getOlAmount());
-                    System.out.println("Date and time of delivery: "+item.getOlDeliveryDate());
-                }
-            }
-        }
-        catch(Exception e)
-        {
+            total_amount = total_amount * (1 + Double.parseDouble(districtStaticInfo[8]) + Double.parseDouble(warehouseStaticInfo[8]))
+                    * (1 - Double.parseDouble(customerStaticInfo[15]));
+            System.out.println("Total amount : " + total_amount);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-=======
-//package com.cassandra.transactions;
-//
-//import com.cassandra.beans.Item;
-//import com.cassandra.utilities.Lucene;
-//import com.datastax.driver.core.ResultSet;
-//import com.datastax.driver.core.Row;
-//import com.datastax.driver.core.Session;
-//import com.datastax.driver.core.Statement;
-//import com.datastax.driver.core.querybuilder.QueryBuilder;
-//
-//import java.text.SimpleDateFormat;
-//import java.util.*;
-//
-///**
-// * Created by ritesh on 09/10/16.
-// */
-//public class NewOrderTransaction {
-//
-//
-//    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session)
-//    {
-//        try
-//        {
-//            // put the order in order status trasaction
-//            // put the order status transaction
-//            // update customer data
-//            // update next order
-//            // update stock level
-//            final String[] columns_next_order = {"d_next_o_id"};
-//            Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-//                    .where(QueryBuilder.eq("o_w_id",w_id)).and(QueryBuilder.eq("o_d_id",d_id));
-//            ResultSet results= session.execute(getDNextOID);
-//            int d_next_oid = results.one().getInt("d_next_o_id");
-//
-//            LinkedList<String> columns = new LinkedList<String>();
-//            columns.add("o_w_id");
-//            columns.add("o_d_id");
-//            columns.add("o_id");
-//            columns.add("o_c_id");
-//            columns.add("o_entry_d");
-//            columns.add("o_carrier_id");
-//            columns.add("o_ol_cnt");
-//            columns.add("o_all_local");
-//            columns.add("o_items");
-//            LinkedList<Object> values = new LinkedList<Object>();
-//            values.add(w_id);
-//            values.add(d_id);
-//            values.add(d_next_oid + 1);
-//            values.add(c_id);
-//            values.add(new Date());
-//            values.add(null);
-//            values.add(itemlineinfo.size());
-//            HashSet<Item> items = new HashSet<Item>();
-//            int itemnum = 0;
-//            /*for(String item: itemlineinfo) {
-//                String[] itemline = item.split(",");
-//                String[] itemRow = litem.get(0).split(",");
-//                Item eachitem = new Item(Integer.parseInt(itemline[0]), itemRow[1], ++itemnum, Integer.parseInt(itemline[1]), Double.parseDouble(itemline[2]), null, );
-//                for(String itm:its)
-//                    eachitem(Integer.parseInt(itm));
-//                items.add(eachitem);
-//            }*/
-//            // OL I ID,OL SUPPLY W ID,OL QUANTITY
-//            double all_local = 1;
-//
-//            for(ArrayList<Integer> it: items) {
-//                if(it.get(1) != w_id) {
-//                    all_local = 0;
-//                    break;
-//                }
-//            }
-//            values.add(all_local);
-//            HashSet<Item> items = new HashSet<Item>();
-//            values.add();
-//
-//            Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values()
-//
-//            Statement orderStatus = QueryBuilder.select().all().from("order_status_transaction")
-//                    .where(QueryBuilder.eq("o_w_id",w_id))
-//                    .and(QueryBuilder.eq("o_d_id",d_id))
-//                    .and(QueryBuilder.eq("o_c_id",c_id))
-//                    .limit(1);
-//            ResultSet results= session.execute(orderStatus);
-//
-//            for(Row r:results.all()){
-//                System.out.println("Customer name : "+r.getString("c_first")
-//                        +r.getString("c_middle")+r.getString("c_last"));
-//                System.out.println(r.getDouble("c_balance"));
-//                Set<Item> orders = r.getSet("ol_i_id",Item.class);
-//                Iterator<Item> order_items = orders.iterator();
-//                while(order_items.hasNext())
-//                {
-//                    Item item = order_items.next();
-//                    System.out.println("Item number: "+item.getOlItemId());
-//                    System.out.println("Warehouse number: "+item.getOlSuppWarehouseId());
-//                    System.out.println("Quantity number: "+item.getOlQuantity());
-//                    System.out.println("Total price: "+item.getOlAmount());
-//                    System.out.println("Date and time of delivery: "+item.getOlDeliveryDate());
-//                }
-//            }
-//        }
-//        catch(Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
-//}
