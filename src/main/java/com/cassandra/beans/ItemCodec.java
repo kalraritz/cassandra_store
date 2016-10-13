@@ -44,25 +44,25 @@ public class ItemCodec extends TypeCodec<Item> {
 
     protected Item toAddress(UDTValue value) {
         return value == null ? null : new Item(
-                value.getInt("ol_i_id"),
+                value.getInt("i_id"),
                 value.getInt("ol_number"),
-                value.getInt("ol_s_w_id"),
-                value.getInt("ol_quantity"),
-                value.getTimestamp("ol_delivery_d"),
-                value.getString("ol_dist_info"),
-                value.getDouble("ol_amount")
+                value.getInt("supply_w_id"),
+                value.getDouble("i_quantity"),
+                value.getTimestamp("i_delivery_d"),
+                value.getString("i_dist_info"),
+                value.getDouble("i_amount")
         );
     }
 
     protected UDTValue toUDTValue(Item value) {
         return value == null ? null : userType.newValue()
-                .setInt("ol_i_id", value.getOlItemId())
+                .setInt("i_id", value.getOlItemId())
                 .setInt("ol_number", value.getOlNumber())
-                .setInt("ol_s_w_id", value.getOlSuppWarehouseId())
-                .setDouble("ol_quantity", value.getOlQuantity())
-                .setDate("ol_delivery_d", null)
-                .setString("ol_dist_info", value.getOlDistInfo())
-                .setDouble("ol_amount", value.getOlAmount())
+                .setInt("supply_w_id", value.getOlSuppWarehouseId())
+                .setDouble("i_quantity", value.getOlQuantity())
+                .setDate("i_delivery_d", null)
+                .setString("i_dist_info", value.getOlDistInfo())
+                .setDouble("i_amount", value.getOlAmount())
                 ;
     }
 }

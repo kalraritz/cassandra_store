@@ -13,19 +13,19 @@ import java.util.Date;
 @UDT(keyspace = "thehood", name = "item")
 public class Item {
 
-    @Field(name = "OL_I_ID")
+    @Field(name = "i_id")
     private int olItemId;
-    @Field(name = "OL_NUMBER")
+    @Field(name = "ol_number")
     private int olNumber;
-    @Field(name = "OL_S_W_ID")
+    @Field(name = "supply_w_id")
     private int olSuppWarehouseId;
-    @Field(name = "OL_QUANTITY")
+    @Field(name = "i_quantity")
     private double olQuantity;
-    @Field(name = "OL_DELIVERY_D")
+    @Field(name = "i_delivery_d")
     private Date olDeliveryDate;
-    @Field(name = "OL_DIST_INFO")
+    @Field(name = "i_dist_info")
     private String olDistInfo;
-    @Field(name = "OL_AMOUNT")
+    @Field(name = "i_amount")
     private double olAmount;
 
     public Item(int olItemId, int olNumber, int olSuppWarehouseId, double olQuantity, Date olDeliveryDate, String olDistInfo, double olAmount) {

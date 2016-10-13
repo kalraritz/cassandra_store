@@ -20,6 +20,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by manisha on 08/10/2016.
@@ -27,8 +28,13 @@ import java.util.List;
 public class Lucene {
 
     private static Logger logger = Logger.getLogger(Lucene.class);
-    private final String luceneIndexFolder = "./lucene-index";
-    public IndexWriter createIndex() throws Exception{
+    private static String luceneIndexFolder;
+    private static String csv_files_path;
+    static IndexSearcher isearcher;
+    static TotalHitCountCollector collector;
+
+
+    public IndexWriter createIndex() throws Exception {
         IndexWriter indexWriter = null;
 
         try {
@@ -43,20 +49,20 @@ public class Lucene {
     }
 
     public void addDocumentToIndex(IndexWriter indexWriter, String csvFile, String csvType, String keyType) throws Exception {
-        System.out.println("Adding "+csvFile+"data to index.....");
+        System.out.println("Adding " + csvFile + "data to index.....");
 //        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = new FileInputStream("C:/DD/D8-data/"+csvFile);
+        InputStream inputStream = new FileInputStream(csv_files_path+csvFile);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 //        InputStreamReader file = new InputStreamReader(classLoader.getResource(csvFile).openStream());
         CSVReader csv = new CSVReader(inputStreamReader);
         Iterator<String[]> iterator = csv.iterator();
-        while(iterator.hasNext()){
-            String key ="";
+        while (iterator.hasNext()) {
+            String key = "";
             String[] row = iterator.next();
             Document document = new Document();
-            if(csvType.equals("item-csv"))
+            if (csvType.equals("item-csv"))
                 key = row[0];
-            else if(csvType.equals("order-line-csv"))
+            else if (csvType.equals("order-line-csv"))
                 key = row[0] + row[1] + row[2];
             else if (csvType == "warehouse-csv")
                 key = row[0];
@@ -65,36 +71,34 @@ public class Lucene {
             else if (csvType == "stock-csv")
                 key = row[0] + row[1];
             else if (csvType == "customer-csv")
-                key = row[0] + row[1]+ row[2];
+                key = row[0] + row[1] + row[2];
             document.add(new Field(keyType, key, TextField.TYPE_STORED));
             document.add(new Field(csvType, String.join(",", row), TextField.TYPE_STORED));
             indexWriter.addDocument(document);
         }
-        System.out.println("Added "+ csvFile+"data to index!!!");
+        System.out.println("Added " + csvFile + "data to index!!!");
 
     }
 
-    public void initSearch()
-    {
+    public void initSearch(Properties properties) {
         try {
+            luceneIndexFolder = properties.getProperty("lucene_path");
+            csv_files_path = properties.getProperty("csv_files_path");
             File file = new File(luceneIndexFolder);
             Directory directory = FSDirectory.open(file.toPath());
             DirectoryReader ireader = DirectoryReader.open(directory);
             isearcher = new IndexSearcher(ireader);
             collector = new TotalHitCountCollector();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
 
         }
 
     }
 
-    static IndexSearcher isearcher;
-    static TotalHitCountCollector collector;
 
 
-    public List<String> search(String searchQuery, String keyType, String csvType) throws Exception{
+
+    public List<String> search(String searchQuery, String keyType, String csvType) throws Exception {
 
         QueryParser parser = new QueryParser(keyType, new StandardAnalyzer());
         Query query = parser.parse(searchQuery);
@@ -111,7 +115,7 @@ public class Lucene {
 
     public static void main(String[] args) {
         Lucene lucene = new Lucene();
-        try{
+        try {
             IndexWriter indexWriter = lucene.createIndex();
             lucene.addDocumentToIndex(indexWriter, "item.csv", "item-csv", "item-id");
             lucene.addDocumentToIndex(indexWriter, "order-line.csv", "order-line-csv", "order-id");

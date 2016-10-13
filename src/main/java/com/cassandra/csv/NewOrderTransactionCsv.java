@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by manisha on 09/10/2016.
@@ -17,13 +18,14 @@ public class NewOrderTransactionCsv {
 
     private static Logger logger = Logger.getLogger(NewOrderTransactionCsv.class);
 
-    public void prepareCsv(Lucene index) {
+    public void prepareCsv(Lucene lucene, Properties properties) {
+        String csv_dump_path = properties.getProperty("csv_dump_path");
+        String csv_files_path = properties.getProperty("csv_files_path");
         PrintWriter pw = null;
         logger.info("Preparing csv for NewOrderTransaction...");
         try{
-            pw = new PrintWriter(new File("C:/DD/D8-data/csvFiles/newOrderTransaction_test.csv"));
-            ClassLoader classLoader = getClass().getClassLoader();
-            InputStream inputStream = new FileInputStream("C:/DD/D8-data/order.csv");
+            pw = new PrintWriter(new File(csv_dump_path+"new_order_transaction_csv"));
+            InputStream inputStream = new FileInputStream(csv_files_path+"order.csv");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             CSVReader orderCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator =  orderCsv.iterator();
@@ -31,6 +33,9 @@ public class NewOrderTransactionCsv {
             {
                 List<String> newOrderRowList = new ArrayList<>();
                 String[] orderRow = iterator.next();
+                if(orderRow[0].equals("2")){
+                    break;
+                }
                 newOrderRowList.add(orderRow[0]);
                 newOrderRowList.add(orderRow[1]);
                 newOrderRowList.add(orderRow[2]);
@@ -42,7 +47,7 @@ public class NewOrderTransactionCsv {
                     newOrderRowList.add(String.valueOf(-1));
                 newOrderRowList.add(orderRow[5]);
                 newOrderRowList.add(orderRow[6]);
-                List<String> orderLineItems = index.search(orderRow[0] + orderRow[1] + orderRow[2], "order-id", "order-line-csv");
+                List<String> orderLineItems = lucene.search(orderRow[0] + orderRow[1] + orderRow[2], "order-id", "order-line-csv");
                 String set = "{";
                 List<String> orderItemList = new ArrayList<>();
                 for(String string: orderLineItems){
