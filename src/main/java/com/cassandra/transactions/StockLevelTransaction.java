@@ -22,12 +22,11 @@ public class StockLevelTransaction {
     final String[] columns_stock = {"s_i_id","s_quantity"};
 
 
-    public void checkStockThreshold(int w_id,int d_id,double threshold,int num_last_orders,Session session)
+    public void checkStockThreshold(int w_id,int d_id,double threshold,int num_last_orders,Session session,Lucene index)
     {
         System.out.println("Processing started....");
         try
         {
-            Lucene index = new Lucene();
             //Get the latest d_next_oid
             Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
                     .where(QueryBuilder.eq("no_w_id",w_id))

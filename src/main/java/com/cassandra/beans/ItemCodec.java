@@ -60,7 +60,7 @@ public class ItemCodec extends TypeCodec<Item> {
                 .setInt("ol_number", value.getOlNumber())
                 .setInt("supply_w_id", value.getOlSuppWarehouseId())
                 .setDouble("i_quantity", value.getOlQuantity())
-                .setDate("i_delivery_d", null)
+                .setTimestamp("i_delivery_d", value.getOlDeliveryDate())
                 .setString("i_dist_info", value.getOlDistInfo())
                 .setDouble("i_amount", value.getOlAmount())
                 ;

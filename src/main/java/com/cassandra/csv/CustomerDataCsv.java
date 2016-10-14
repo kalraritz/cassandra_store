@@ -1,6 +1,5 @@
 package com.cassandra.csv;
 
-import com.cassandra.dump.DumpCustomer;
 import com.opencsv.CSVReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;

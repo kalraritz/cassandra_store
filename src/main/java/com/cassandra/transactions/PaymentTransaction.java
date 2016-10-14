@@ -22,36 +22,36 @@ public class PaymentTransaction {
 		Lucene index = new Lucene();
 		try
 		{
-			String ytdcolums[]={"w_ytd","d_ytd"};
-			Statement getYTDInfo = QueryBuilder.select(ytdcolums).from("next_order")
-					.where(QueryBuilder.eq("w_id",w_id))
-					.and(QueryBuilder.eq("d_id",d_id));
+			String ytdcolums[]={"no_w_ytd","no_d_ytd"};
+    			Statement getYTDInfo = QueryBuilder.select(ytdcolums).from("next_order")
+					.where(QueryBuilder.eq("no_w_id",w_id))
+					.and(QueryBuilder.eq("no_d_id",d_id));
 
 			Row results= session.execute(getYTDInfo).one();
 
-			double d_ytd = results.getDouble("d_ytd");
-			double w_ytd = results.getDouble("w_ytd");
-			QueryBuilder.update("payment_transaction").with(QueryBuilder.set("w_ytd",w_ytd + payment ))
-					.and(QueryBuilder.set("d_ytd", d_ytd + payment))
-					.where(QueryBuilder.eq("w_id", d_id))
-					.and(QueryBuilder.eq("d_id",d_id));
-
-			String customercolums[]={"c_balance","c_ytd","c_payment"};
-			Statement customerInfo = QueryBuilder.select(customercolums).from("customer")
-					.where(QueryBuilder.eq("w_id",w_id))
-					.and(QueryBuilder.eq("d_id",d_id))
+			double d_ytd = results.getDouble("no_d_ytd");
+			double w_ytd = results.getDouble("no_w_ytd");
+            Statement customerData = QueryBuilder.update("next_order").with(QueryBuilder.set("no_w_ytd",w_ytd + payment ))
+					.and(QueryBuilder.set("no_d_ytd", d_ytd + payment))
+					.where(QueryBuilder.eq("no_w_id", d_id))
+					.and(QueryBuilder.eq("no_d_id",d_id));
+            session.execute(customerData);
+			String customercolums[]={"c_balance","c_ytd_payment","c_payment_cnt"};
+			Statement customerInfo = QueryBuilder.select(customercolums).from("customer_data")
+					.where(QueryBuilder.eq("c_w_id",w_id))
+					.and(QueryBuilder.eq("c_d_id",d_id))
 					.and(QueryBuilder.eq("c_id",c_id));
 			results= session.execute(customerInfo).one();
 			double c_balance = results.getDouble("c_balance");
-			double c_ytd = results.getDouble("c_ytd");
-			double c_payment = results.getDouble("c_payment");
-			QueryBuilder.update("customer").with(QueryBuilder.set("c_balance",c_balance - payment ))
-					.and(QueryBuilder.set("c_ytd", c_ytd + payment))
-					.and(QueryBuilder.set("c_payment", c_payment + 1))
-					.where(QueryBuilder.eq("w_id",w_id))
-					.and(QueryBuilder.eq("d_id",d_id))
+			double c_ytd = results.getDouble("c_ytd_payment");
+			int c_payment_cnt = results.getInt("c_payment_cnt");
+            customerData = QueryBuilder.update("customer_data").with(QueryBuilder.set("c_balance",c_balance - payment ))
+					.and(QueryBuilder.set("c_ytd_payment", c_ytd + payment))
+					.and(QueryBuilder.set("c_payment_cnt", c_payment_cnt + 1))
+					.where(QueryBuilder.eq("c_w_id",w_id))
+					.and(QueryBuilder.eq("c_d_id",d_id))
 					.and(QueryBuilder.eq("c_id",c_id));
-
+            session.execute(customerData);
 			String customerStaticInfo = index.search(w_id+ "" + d_id+""+c_id, "customer-id", "customer-csv").get(0);
 			String indexData[] = customerStaticInfo.split(",");
 			System.out.println("Customer Identifier : "+w_id+""+d_id+""+c_id);

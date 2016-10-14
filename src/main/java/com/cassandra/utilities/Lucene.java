@@ -1,6 +1,5 @@
 package com.cassandra.utilities;
 
-import com.cassandra.dump.DumpDistrict;
 import com.opencsv.CSVReader;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -99,16 +98,22 @@ public class Lucene {
 
 
     public List<String> search(String searchQuery, String keyType, String csvType) throws Exception {
-
-        QueryParser parser = new QueryParser(keyType, new StandardAnalyzer());
-        Query query = parser.parse(searchQuery);
-        isearcher.search(query, collector);
-        TopDocs topDocs = isearcher.search(query, Math.max(1, collector.getTotalHits()));
-        ScoreDoc[] hits = isearcher.search(query, topDocs.totalHits).scoreDocs;
         List<String> items = new ArrayList<>();
-        for (int i = 0; i < hits.length; i++) {
-            Document hitDoc = isearcher.doc(hits[i].doc);
-            items.add(hitDoc.getField(csvType).stringValue());
+        try {
+            QueryParser parser = new QueryParser(keyType, new StandardAnalyzer());
+            Query query = parser.parse(searchQuery);
+            isearcher.search(query, collector);
+            TopDocs topDocs = isearcher.search(query, Math.max(1, collector.getTotalHits()));
+            ScoreDoc[] hits = isearcher.search(query, topDocs.totalHits).scoreDocs;
+            for (int i = 0; i < hits.length; i++) {
+                Document hitDoc = isearcher.doc(hits[i].doc);
+                items.add(hitDoc.getField(csvType).stringValue());
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(searchQuery);
+            System.out.println(keyType);
         }
         return items;
     }

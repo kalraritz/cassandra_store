@@ -22,6 +22,8 @@ public class DeliveryTransaction {
         try
         {
             List<ResultSet> resultSetList = new ArrayList<>();
+
+            //Get oldest order for 10 districts
             for(int i=1; i<=10; i++){
                 Statement getOrders = QueryBuilder.select().all().from("new_order_transaction")
                         .where(QueryBuilder.eq("o_w_id",w_id))
@@ -31,6 +33,15 @@ public class DeliveryTransaction {
                 ResultSet results= session.execute(getOrders);
                 resultSetList.add(results);
             }
+
+            Statement CustomerDataUpdate1 = QueryBuilder.update("customer_data").with(QueryBuilder.set("c_balance",100.0 ))
+                    .where(QueryBuilder.eq("c_w_id", 1))
+                    .and(QueryBuilder.eq("c_d_id",1))
+                    .and(QueryBuilder.eq("c_id",2621));
+            session.execute(CustomerDataUpdate1);
+
+
+
             for(ResultSet resultSet: resultSetList){
                 for(Row r:resultSet.all()){
                     int order_id = r.getInt("o_id");
@@ -41,6 +52,7 @@ public class DeliveryTransaction {
                     Set<Item> updated_orders = new HashSet<Item>();
                     Item item = null;
                     int ol_amt_sum = 0;
+                    //Create a new items set with updated delivery date
                     while(order_items.hasNext())
                     {
                         item = order_items.next();
@@ -49,21 +61,29 @@ public class DeliveryTransaction {
                         updated_orders.add(item);
                     }
                     ol_amt_sum = 100;
-                    QueryBuilder.update("new_order_transaction").with(QueryBuilder.set("o_carrier_id",carrier_id ))
+                    //Update new order with carrier id and items set
+                    Statement NewOrderDeliveryUpdate = QueryBuilder.update("new_order_transaction").with(QueryBuilder.set("o_carrier_id",carrier_id ))
                             .and(QueryBuilder.set("o_items", updated_orders))
-                            .where(QueryBuilder.eq("o_id", order_id));
+                            .where(QueryBuilder.eq("o_id", order_id))
+                            .and(QueryBuilder.eq("o_w_id",w_id))
+                            .and(QueryBuilder.eq("o_d_id",d_id));
+                    session.execute(NewOrderDeliveryUpdate);
+
+
                     Statement CustomerOrder = QueryBuilder.select().all().from("customer_data")
                             .where(QueryBuilder.eq("c_w_id",w_id))
                             .and(QueryBuilder.eq("c_d_id",d_id))
                             .and(QueryBuilder.eq("c_id",c_id));
                     Row customerResult= session.execute(CustomerOrder).one();
-                    double balance = customerResult.getDouble("c_balance");
-                    int delivery_cnt = customerResult.getInt("c_delivery_cnt");
-                    QueryBuilder.update("customer_data").with(QueryBuilder.set("c_balance",balance + ol_amt_sum ))
-                            .and(QueryBuilder.set("c_delivery_cnt", delivery_cnt + 1))
-                            .where(QueryBuilder.eq("c_id", c_id))
-                    .and(QueryBuilder.eq("c_w_id", w_id))
-                    .and(QueryBuilder.eq("c_d_id", d_id));
+                    double balance = customerResult.getDouble("c_balance") + ol_amt_sum;
+                    int delivery_cnt = customerResult.getInt("c_delivery_cnt") + 1;
+
+                    Statement CustomerDataUpdate = QueryBuilder.update("customer_data").with(QueryBuilder.set("c_balance",balance ))
+                            .and(QueryBuilder.set("c_delivery_cnt", delivery_cnt))
+                            .where(QueryBuilder.eq("c_w_id", w_id))
+                            .and(QueryBuilder.eq("c_d_id", d_id))
+                            .and(QueryBuilder.eq("c_id", c_id));
+                    session.execute(CustomerDataUpdate);
                 }
             }
 

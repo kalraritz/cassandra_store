@@ -1,12 +1,6 @@
 package com.cassandra.transactions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.cassandra.beans.Item;
 import com.datastax.driver.core.Cluster;
@@ -18,23 +12,27 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 public class PopularItemTransaction {
 
+	final String[] columns_next_order = {"no_d_next_o_id"};
+	final String[] columns_stock = {"s_i_id","s_quantity"};
 
 	public void checkPopularItem(int w_id,int d_id,int num_last_orders,Session session)
 	{
-		final String[] columns_next_order = {"d_next_o_id"};
-		final String[] columns_stock = {"s_i_id","s_quantity"};
 		try
 		{
 			//Get the latest d_next_oid
 			Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-					.where(QueryBuilder.eq("o_w_id",w_id));
+					.where(QueryBuilder.eq("no_w_id",w_id))
+					.and(QueryBuilder.eq("no_d_id",d_id));
 			ResultSet results= session.execute(getDNextOID);
-			int d_next_oid = results.one().getInt("d_next_o_id");
+			int d_next_oid = results.one().getInt("no_d_next_o_id");
 			int start_index = d_next_oid - num_last_orders;
 
+
 			//Get the last L orders
-			Statement getLastLOrders = QueryBuilder.select().all().from("new_order")
-					.where(QueryBuilder.gte("o_id",start_index))
+			Statement getLastLOrders = QueryBuilder.select().all().from("new_order_transaction")
+					.where(QueryBuilder.eq("o_w_id",w_id))
+					.and(QueryBuilder.eq("o_d_id",d_id))
+					.and(QueryBuilder.gte("o_id",start_index))
 					.and(QueryBuilder.lte("o_id",d_next_oid));
 			results= session.execute(getLastLOrders);
 			Set<Integer> itemids = new HashSet<Integer>();
@@ -44,7 +42,7 @@ public class PopularItemTransaction {
 			//Add itemids to a list to fetch the quantity for each item
 			//Create a map of order-items.
 			for(Row r:results.all()){
-				Set<Item> orders = r.getSet("ol_i_id",Item.class);
+				Set<Item> orders = r.getSet("o_items",Item.class);
 				int order_id = r.getInt("o_id");
 				Iterator<Item> order_items = orders.iterator();
 				while(order_items.hasNext())
@@ -66,13 +64,13 @@ public class PopularItemTransaction {
 			}
 
 			//Get quantity for each item and store in item-quantity map
-			Statement itemPrices = QueryBuilder.select(columns_stock).from("stock")
-					.where(QueryBuilder.eq("w_id",w_id))
-					.and(QueryBuilder.in("s_id",itemids.toArray()));
+			Statement itemPrices = QueryBuilder.select(columns_stock).from("stock_level_transaction")
+					.where(QueryBuilder.eq("s_w_id",w_id))
+					.and(QueryBuilder.in("s_i_id",itemids.toArray()));
 			results = session.execute(itemPrices);
-			Map<Integer,Integer> orderItemQuantity = new HashMap<Integer,Integer>();
+			Map<Integer,Double> orderItemQuantity = new HashMap<Integer,Double>();
 			for(Row r:results.all()){
-				int item_quantity = r.getInt("s_quantity");
+				double item_quantity = r.getDouble("s_quantity");
 				int item_id = r.getInt("s_i_id");
 				orderItemQuantity.put(item_id,item_quantity);
 			}
@@ -85,19 +83,21 @@ public class PopularItemTransaction {
 			}
 		}
 		catch(Exception e)
-		{}
+		{
+			e.printStackTrace();
+		}
 	}
 
 	//Returns max item id
-	private int getMaxQuantity(List<Integer> value, Map<Integer, Integer> orderItemQuantity) {
+	private int getMaxQuantity(List<Integer> value, Map<Integer, Double> orderItemQuantity) {
 
 		Iterator<Integer> it = value.iterator();
-		int max = Integer.MIN_VALUE;
+		double max = Integer.MIN_VALUE;
 		int max_item_id = 0;
 		while(it.hasNext())
 		{
 			int item_id = it.next();
-			int item_quantity = orderItemQuantity.get(item_id);
+			double item_quantity = orderItemQuantity.get(item_id);
 			if(item_quantity > max)
 			{
 				max = item_quantity;
