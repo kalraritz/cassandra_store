@@ -32,7 +32,9 @@ public class TransactionDriver {
     public static void main(String args[]) {
         Lucene lucene = new Lucene();
         try {
-            InputStream inputStream = new FileInputStream("C:\\DD\\cassandra_store\\src\\main\\resources\\config.properties");
+            String configFilePath = System.getenv("DD_CONFIG_FILE");
+            //export DD_CONFIG_FILE="/Users/ritesh/Documents/projects/nus/config.properties"
+            InputStream inputStream = new FileInputStream(configFilePath);
             Properties properties = new Properties();
             properties.load(inputStream);
             dir = properties.getProperty("csv_files_path");
