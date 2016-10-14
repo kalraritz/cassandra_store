@@ -80,7 +80,8 @@ public class TransactionDriver {
                     double threshold = 0.0;
                     int lastLOrders = 0;
                     switch (tranType) {
-//                        case "N":
+                        case "N":
+//                            cnt++;
 //                            c_id = Integer.parseInt(content[1]);
 //                            w_id = Integer.parseInt(content[2]);
 //                            d_id = Integer.parseInt(content[3]);
@@ -106,14 +107,13 @@ public class TransactionDriver {
 //                            }
 //
 //                            //new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
-//                            break;
-//                            break;
-                        case "P":
+                            break;
+                            case "P":
                             w_id = Integer.parseInt(content[1]);
                             d_id = Integer.parseInt(content[2]);
                             c_id = Integer.parseInt(content[3]);
                             payment = Double.parseDouble(content[4]);
-                            new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session);
+                                new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
                             break;
 //                        case "D":
 //                            w_id = Integer.parseInt(content[1]);
@@ -143,6 +143,7 @@ public class TransactionDriver {
 //                                new TopBalanceTransaction().getTopBalance(session);
                     }
                 }
+                System.out.println(cnt);
             } catch (IOException e) {
                 e.printStackTrace();
             }

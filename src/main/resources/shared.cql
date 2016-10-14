@@ -1,4 +1,4 @@
-create KEYSPACE thehood WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+create KEYSPACE newhood WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 2};
 
 use thehood;
 
@@ -76,8 +76,7 @@ c_balance double,
 c_ytd_payment double,
 c_payment_cnt int,
 c_delivery_cnt int,
-primary key (c_w_id, c_d_id, c_id, c_balance))
-with clustering order by (c_d_id asc, c_id asc, c_balance desc);
+primary key (c_w_id, c_d_id, c_id));
 
 create table next_order(
 no_w_id int,
@@ -121,7 +120,6 @@ o_items set<frozen <item>>,
 primary key(o_w_id, o_d_id, o_id))
 with clustering order by(o_d_id asc, o_id asc);
 
-/*
 create table order_status_transaction(
 os_w_id int,
 os_d_id int,
@@ -133,7 +131,6 @@ os_o_carrier_id int,
 os_o_items set<frozen <item>>,
 primary key(os_w_id, os_d_id, os_c_id, os_o_id)
 );
-*/
 
 create table sql_warehouse(
 w_id int PRIMARY KEY,
@@ -406,24 +403,6 @@ s_i_price double
 primary key(s_w_id, s_i_id)
 );
 
-create table stock_level_transaction(
-s_w_id int,
-s_d_id int,
-s_i_id int,
-s_quantity double,
-s_ytd double,
-s_order_cnt int,
-s_remote_cnt int 
-);
-
-create table next_order(
-w_id int,
-d_id int,
-d_next_o_id int,
-w_ytd double,
-d_ytd double,
-primary key(w_id, d_id)
-);
 
 create table order_status_transaction(
 o_w_id int,
@@ -441,12 +420,6 @@ primary key((o_w_id, o_d_id), o_c_id, o_id)
 
 );
 
------------------
-CREATE TABLE Customer (C_W_ID int, C_D_ID int, C_ID bigint, C_FIRST text,
-C_MIDDLE text, C_LAST text, C_STREET_1 text, C_STREET_2 text, C_CITY text, C_STATE text, C_ZIP text,
-C_PHONE text, C_SINCE timestamp, C_CREDIT text, C_CREDIT_LIM double, C_DISCOUNT double, C_DATA text,
-PRIMARY KEY((C_W_ID), C_D_ID, C_ID));
-
 
 
 CREATE TYPE item (
@@ -460,28 +433,47 @@ CREATE TYPE item (
   OL_AMOUNT double
 );
 
+CREATE TABLE new_order_transaction (
+    o_w_id int,
+    o_d_id int,
+    o_id int,
+    o_all_local double,
+    o_c_id int,
+    o_carrier_id int,
+    o_entry_d timestamp,
+    o_items set<frozen<item>>,
+    o_ol_cnt double,
+    PRIMARY KEY (o_w_id,o_d_id,o_id));
 
-CREATE TABLE New_Order_Transaction (
-  O_W_ID int,
-  O_D_ID int,
-  O_ID bigint,
-  O_ENTRY_D timestamp,
-  O_CARRIER_ID int,
-  O_C_ID bigint,
-  O_OL_CNT int,
-  O_ALL_LOCAL int,
-  O_ITEMS set<frozen <item>>,
-  PRIMARY KEY ((O_W_ID), O_D_ID, O_ID, O_ENTRY_D));
+	
+create table next_order(
+no_w_id int,
+no_d_id int,
+no_d_next_o_id int,
+no_w_ytd double static,
+no_d_ytd double,
+primary key (no_w_id, no_d_id)
+);
+copy next_order(no_w_id,no_d_id,no_d_next_o_id,no_w_ytd,no_d_ytd) from ''
 
 
 
+create table stock_level_transaction(
+s_w_id int,
+s_i_id int,
+s_quantity double,
+s_ytd double,
+s_order_cnt int,
+s_remote_cnt int,
+primary key(s_w_id, s_i_id)
+);
+copy newhood.stock_level_transaction(s_w_id,s_i_id,s_quantity,s_ytd,s_order_cnt,s_remote_cnt) from ''
+
+
+
+	
 # Ritesh added dump commands
 copy thehood.warehouse(w_id,w_name,w_street_1,w_street_2,w_city,w_state,w_zip,w_tax) from '~/csvFiles/warehouse.csv';
 copy thehood.district(d_w_id, d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax) from '~/csvFiles/district.csv';
 copy thehood.stock(s_w_id,s_i_id,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data,s_i_name,s_i_im_d,s_i_im_price,s_i_data) from '~/csvFiles/stock.csv';
-copy thehood.customer(c_w_id,c_d_id,c_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_data) from '~/csvFiles/customer.csv';
-copy thehood.customer_data (c_w_id,c_d_id,c_id,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt) from '~/csvFiles/customerData.csv';
-copy new_order_transaction(o_w_id,o_d_id,o_id,o_c_id,o_entry_d,o_carrier_id,o_ol_cnt,o_all_local,o_items) from '~/csvFiles/newOrderTransaction.csv';
-copy order_status_transaction() from '~/csvFiles/';
-copy stock_level_transaction() from '~/csvFiles/';
-copy next_order() from '~/csvFiles/';
+
