@@ -41,6 +41,7 @@ public class PaymentTransaction {
 
             String s = "UPDATE newhood.next_order SET no_w_ytd="+1000+",no_d_ytd="+1000
                         +" WHERE no_w_id="+w_id+" AND no_d_id="+d_id;
+            session.execute(s);
 
 
             /*
@@ -50,7 +51,7 @@ public class PaymentTransaction {
 					.and(QueryBuilder.set("no_d_ytd", 1000))
 					.where(QueryBuilder.eq("no_w_id", w_id))
 					.and(QueryBuilder.eq("no_d_id",d_id));*/
-            session.execute(s);
+
 
 			statement = QueryBuilder.select(customercolums).from("customer_data")
 					.where(QueryBuilder.eq("c_w_id",w_id))
