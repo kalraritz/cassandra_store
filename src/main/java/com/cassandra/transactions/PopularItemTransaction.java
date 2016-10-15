@@ -17,7 +17,7 @@ public class PopularItemTransaction {
 	final String[] columns_next_order = {"no_d_next_o_id"};
 	final String[] columns_stock = {"s_i_id","s_quantity"};
 
-	public void checkPopularItem(int w_id,int d_id,int num_last_orders,Session session)
+	public void checkPopularItem(int w_id,int d_id,int num_last_orders,Session session, PrintWriter printWriter)
 	{
 		try
 		{
@@ -78,17 +78,16 @@ public class PopularItemTransaction {
 			}
 
 			//Iterate over order-item map and get max item id for each order
-			PrintWriter pw = TransactionDriver.pw;
-			pw.write("Popular Item Transaction--------"+"\n");
+			printWriter.write("Popular Item Transaction--------"+"\n");
 			for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet())
 			{
 
-				pw.write("Order Id : "+entry.getKey()
+				printWriter.write("Order Id : "+entry.getKey()
 						+"\n"+"Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity)+"\n");
 				//System.out.println("Order Id : "+entry.getKey());
 				//System.out.println("Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity));
 			}
-			pw.flush();
+			printWriter.flush();
 		}
 		catch(Exception e)
 		{

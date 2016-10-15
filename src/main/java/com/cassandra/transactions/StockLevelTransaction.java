@@ -24,7 +24,7 @@ public class StockLevelTransaction {
     final String[] columns_stock = {"s_i_id","s_quantity"};
     final String[] next_order_columns = {"o_items"};
 
-    public void checkStockThreshold(int w_id,int d_id,double threshold,int num_last_orders,Session session,Lucene index)
+    public void checkStockThreshold(int w_id,int d_id,double threshold,int num_last_orders,Session session,Lucene index, PrintWriter printWriter)
     {
      //   System.out.println("Processing started....");
         try
@@ -64,20 +64,18 @@ public class StockLevelTransaction {
                     .where(QueryBuilder.eq("s_w_id",w_id))
                     .and(QueryBuilder.in("s_i_id",itemids.toArray()));
             results = session.execute(itemQuantity);
-
-            PrintWriter pw = TransactionDriver.pw;
-            pw.write("Stock Level Transaction--------"+"\n");
+            printWriter.write("Stock Level Transaction--------"+"\n");
             for(Row r:results.all()){
                 double item_quantity = r.getDouble("s_quantity");
                 if(item_quantity < threshold)
                 {
                     int item_id = r.getInt("s_i_id");
-                    pw.write("Item id : "+ item_id+"\n");
-                    pw.write("Item name : "+ itemNames.get(item_id)+"\n");
-                    pw.write("Item quantity "+item_quantity+"\n");
+                    printWriter.write("Item id : "+ item_id+"\n");
+                    printWriter.write("Item name : "+ itemNames.get(item_id)+"\n");
+                    printWriter.write("Item quantity "+item_quantity+"\n");
                 }
             }
-            pw.flush();
+            printWriter.flush();
         }
         catch(Exception e)
         {

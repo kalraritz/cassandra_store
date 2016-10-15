@@ -23,7 +23,7 @@ public class OrderStatusTransaction {
 
 	static 	String customercolums[]={"c_balance"};
 	static 	String ordercolums[]={"o_items"};
-	public void readOrderStatus(int w_id, int d_id, int c_id, Session session, Lucene index)
+	public void readOrderStatus(int w_id, int d_id, int c_id, Session session, Lucene index, PrintWriter printWriter)
 	{
 		try
 		{
@@ -51,11 +51,10 @@ public class OrderStatusTransaction {
 					break;
 				}
 			}
-            PrintWriter pw = TransactionDriver.pw;
-            pw.write("Order Status Transaction--------"+"\n");
-            pw.write("Customer name : "+customerData[3]
+            printWriter.write("Order Status Transaction--------"+"\n");
+            printWriter.write("Customer name : "+customerData[3]
                     +" "+customerData[4]+" "+customerData[5]+"\n");
-            pw.write("Customer balance : "+customerRow.getDouble("c_balance")+"\n");
+            printWriter.write("Customer balance : "+customerRow.getDouble("c_balance")+"\n");
 
             //System.out.println("Customer name : "+customerData[3]
 					//+" "+customerData[4]+" "+customerData[5]);
@@ -65,7 +64,7 @@ public class OrderStatusTransaction {
 			while(order_items.hasNext())
 			{
 				Item item = order_items.next();
-                pw.write("Item number: "+item.getOlItemId()+"\n"+"Warehouse number: "+item.getOlSuppWarehouseId()
+                printWriter.write("Item number: "+item.getOlItemId()+"\n"+"Warehouse number: "+item.getOlSuppWarehouseId()
                 +"\n"+"Quantity number: "+item.getOlQuantity()+"\n"+"Total price: "+item.getOlAmount()
                 +"\n"+"Date and time of delivery: "+item.getOlDeliveryDate()+"\n");
 				//System.out.println("Item number: "+item.getOlItemId());
@@ -74,7 +73,7 @@ public class OrderStatusTransaction {
 				//System.out.println("Total price: "+item.getOlAmount());
 				//System.out.println("Date and time of delivery: "+item.getOlDeliveryDate());
 			}
-            pw.flush();
+            printWriter.flush();
         }
 		catch(Exception e)
 		{

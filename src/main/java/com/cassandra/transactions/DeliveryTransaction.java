@@ -1,5 +1,6 @@
 package com.cassandra.transactions;
 
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -16,7 +17,7 @@ import com.datastax.driver.core.UserType;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 public class DeliveryTransaction {
-    public void readDeliveryTransaction(int w_id,int carrier_id,Session session)
+    public void readDeliveryTransaction(int w_id, int carrier_id, Session session, PrintWriter printWriter)
     {
         w_id = 1;
         try
