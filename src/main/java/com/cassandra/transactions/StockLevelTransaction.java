@@ -1,12 +1,14 @@
 package com.cassandra.transactions;
 
 import java.awt.*;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.cassandra.TransactionDriver;
 import com.cassandra.beans.Item;
 import com.cassandra.utilities.Lucene;
 import com.datastax.driver.core.Cluster;
@@ -20,11 +22,11 @@ public class StockLevelTransaction {
 
     final String[] columns_next_order = {"no_d_next_o_id"};
     final String[] columns_stock = {"s_i_id","s_quantity"};
-
+    final String[] next_order_columns = {"o_items"};
 
     public void checkStockThreshold(int w_id,int d_id,double threshold,int num_last_orders,Session session,Lucene index)
     {
-        System.out.println("Processing started....");
+     //   System.out.println("Processing started....");
         try
         {
             //Get the latest d_next_oid
@@ -36,7 +38,7 @@ public class StockLevelTransaction {
             int start_index = d_next_oid - num_last_orders;
 
             //Get the last L orders
-            Statement getLastLOrders = QueryBuilder.select().all().from("new_order_transaction")
+            Statement getLastLOrders = QueryBuilder.select(next_order_columns).from("new_order_transaction")
                     .where(QueryBuilder.eq("o_w_id",w_id))
                     .and(QueryBuilder.eq("o_d_id",d_id))
                     .and(QueryBuilder.gte("o_id",start_index))
@@ -63,18 +65,19 @@ public class StockLevelTransaction {
                     .and(QueryBuilder.in("s_i_id",itemids.toArray()));
             results = session.execute(itemQuantity);
 
-            System.out.println("Threshold "+threshold);
-
+            PrintWriter pw = TransactionDriver.pw;
+            pw.write("Stock Level Transaction--------"+"\n");
             for(Row r:results.all()){
                 double item_quantity = r.getDouble("s_quantity");
                 if(item_quantity < threshold)
                 {
                     int item_id = r.getInt("s_i_id");
-                    System.out.println("Item id : "+ item_id);
-                    System.out.println("Item name : "+ itemNames.get(item_id));
-                    System.out.println("Item quantity "+item_quantity);
+                    pw.write("Item id : "+ item_id+"\n");
+                    pw.write("Item name : "+ itemNames.get(item_id)+"\n");
+                    pw.write("Item quantity "+item_quantity+"\n");
                 }
             }
+            pw.flush();
         }
         catch(Exception e)
         {

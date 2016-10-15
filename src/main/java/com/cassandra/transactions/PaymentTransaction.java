@@ -1,8 +1,12 @@
 package com.cassandra.transactions;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import com.cassandra.TransactionDriver;
 import com.cassandra.beans.Item;
 import com.cassandra.utilities.Lucene;
 import com.datastax.driver.core.*;
@@ -29,29 +33,15 @@ public class PaymentTransaction {
 			Statement statement = QueryBuilder.select(ytdcolums).from("next_order")
 					.where(QueryBuilder.eq("no_w_id",w_id))
 					.and(QueryBuilder.eq("no_d_id",d_id));
+			Row results= session.execute(statement).one();
+			double d_ytd = results.getDouble("no_d_ytd")+payment;
+			double w_ytd = results.getDouble("no_w_ytd")+payment;
 
-			//Row results= session.execute(statement).one();
-
-			//double d_ytd = results.getDouble("no_d_ytd")+payment;
-			//double w_ytd = results.getDouble("no_w_ytd")+payment;
-
-
-
-            Row results;
-
-            String s = "UPDATE newhood.next_order SET no_w_ytd="+1000+",no_d_ytd="+1000
-                        +" WHERE no_w_id="+w_id+" AND no_d_id="+d_id;
-            session.execute(s);
-
-
-            /*
-
-
-			Statement s = QueryBuilder.update("newhood","next_order").with(QueryBuilder.set("no_w_ytd",1000 ))
-					.and(QueryBuilder.set("no_d_ytd", 1000))
+            statement = QueryBuilder.update("next_order").with(QueryBuilder.set("no_w_ytd",w_ytd ))
+					.and(QueryBuilder.set("no_d_ytd", d_ytd))
 					.where(QueryBuilder.eq("no_w_id", w_id))
-					.and(QueryBuilder.eq("no_d_id",d_id));*/
-
+					.and(QueryBuilder.eq("no_d_id",d_id));
+            session.execute(statement);
 
 			statement = QueryBuilder.select(customercolums).from("customer_data")
 					.where(QueryBuilder.eq("c_w_id",w_id))
@@ -68,8 +58,22 @@ public class PaymentTransaction {
 					.and(QueryBuilder.eq("c_d_id",d_id))
 					.and(QueryBuilder.eq("c_id",c_id));
             session.execute(statement);
+
 			String customerStaticInfo = lucene.search(w_id+ "" + d_id+""+c_id, "customer-id", "customer-csv").get(0);
 			String indexData[] = customerStaticInfo.split(",");
+            PrintWriter pw = TransactionDriver.pw;
+            pw.write("Popular Item Transaction--------"+"\n");
+            pw.write("Customer Identifier : "+w_id+""+d_id+""+c_id
+                    +"\n"+"Customer name : " +indexData[3]+" "+indexData[4]+" "+indexData[5]+"\n"+
+                    "Customer address : "+indexData[6]+" "+indexData[7]+" "+indexData[8]+" "+indexData[9]+
+                    " "+indexData[10]+"\n"+"Customer phone : "+indexData[11]+"\n"+"Entry created date : "+indexData[11]+"\n"+
+                    "Customer credit status : "+indexData[12]+"\n"+"Customer credit limit : "+indexData[13]+"\n"+
+                    "Customer discount rate : "+indexData[14]+"\n"+"Customer balance payment : "+indexData[15]+"\n"+
+                    "Customer credit limit : "+indexData[16]+"\n"+"Customer discount rate : "+indexData[17]+"\n"+
+                    "Customer outstanding balance : "+indexData[18]+"\n"
+            );
+
+            /*
 			System.out.println("Customer Identifier : "+w_id+""+d_id+""+c_id);
 			System.out.println("Customer name : " +indexData[3]+" "+indexData[4]+" "+indexData[5]);
 			System.out.println("Customer address : "+indexData[6]+" "+indexData[7]+" "+indexData[8]+" "+indexData[9]+
@@ -84,18 +88,26 @@ public class PaymentTransaction {
 			System.out.println("Customer discount rate : "+indexData[17]);
 			System.out.println("Customer outstanding balance : "+indexData[18]);
 
-
+*/
 			String warehouseStaticInfo = lucene.search(w_id+"", "warehouse-id", "warehouse-csv").get(0);
 			indexData = warehouseStaticInfo.split(",");
+            pw.write("Warehouse address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
+                    + indexData[5]+ " " + indexData[6]+"\n");
+
+            /*
 			System.out.println("Warehouse address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
-					+ indexData[5]+ " " + indexData[6]);
+					+ indexData[5]+ " " + indexData[6]);*/
 
 			String districtStaticInfo = lucene.search(w_id+""+d_id, "district-id", "district-csv").get(0);
 			indexData = districtStaticInfo.split(",");
+            pw.write("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
+                    + indexData[5]+ " " + indexData[6]+"\n"+"Payment amount : "+payment+"\n");
+            pw.flush();
+            /*
 			System.out.println("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
 					+ indexData[5]+ " " + indexData[6]);
 
-			System.out.println("Payment amount : "+payment);
+			System.out.println("Payment amount : "+payment);*/
 		}
 		catch(Exception e)
 		{

@@ -1,5 +1,6 @@
 package com.cassandra.transactions;
 
+import com.cassandra.TransactionDriver;
 import com.cassandra.beans.Item;
 import com.cassandra.utilities.Lucene;
 import com.datastax.driver.core.ResultSet;
@@ -8,6 +9,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.RunnableFuture;
@@ -17,55 +19,9 @@ import java.util.concurrent.RunnableFuture;
  */
 public class NewOrderTransaction extends Thread {
 
-
-
-
-    public NewOrderTransaction(ArrayList<NewOrderTransaction> listOfObjects,Session session,Lucene index){
-        if(this.listOfObjects == null)
-        {
-            this.listOfObjects =  new ArrayList<>(listOfObjects);
-        }
-        if(NewOrderTransaction.session == null || NewOrderTransaction.index == null)
-        {
-            NewOrderTransaction.session = session;
-            NewOrderTransaction.index = index;
-        }
-    }
-
-    private int w_id;
-    private int d_id;
-    private int c_id;
-    private ArrayList<String> itemlineinfo;
-    private static Session session;
-    private static Lucene index;
-    private ArrayList<NewOrderTransaction> listOfObjects;
     static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id","o_c_id","o_entry_d","o_carrier_id","o_ol_cnt","o_all_local","o_items");
 
-    public NewOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo) {
-        this.w_id = w_id;
-        this.d_id = d_id;
-        this.c_id = c_id;
-        this.itemlineinfo = itemlineinfo;
-
-    }
-
-
-    @Override
-    public void run() {
-        ArrayList<NewOrderTransaction> objs =  new ArrayList<>(this.listOfObjects) ;
-        System.out.println(objs.size());
-        for (NewOrderTransaction ob :objs)
-        {
-            final String[] columns_next_order = {"no_d_next_o_id"};
-            Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-                    .where(QueryBuilder.eq("no_w_id", ob.w_id)).and(QueryBuilder.eq("no_d_id", ob.d_id));
-            ResultSet results = session.execute(getDNextOID);
-            int d_next_oid = results.one().getInt("no_d_next_o_id");
-            List<Object> values =  new ArrayList<Object>();
-        }
-    }
-
-
+   static final String[] columns_next_order = {"no_d_next_o_id"};
 
     public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index) {
         try {
@@ -74,14 +30,15 @@ public class NewOrderTransaction extends Thread {
             // update customer data
             // update next order
             // update stock level
-            final String[] columns_next_order = {"no_d_next_o_id"};
+
             Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
                     .where(QueryBuilder.eq("no_w_id", w_id)).and(QueryBuilder.eq("no_d_id", d_id));
             ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
+
+
+
             List<Object> values =  new ArrayList<Object>();
-
-
             values.add(w_id);
             values.add(d_id);
             values.add(d_next_oid + 1);
@@ -95,6 +52,9 @@ public class NewOrderTransaction extends Thread {
             Set<Item> items = new HashSet<>();
             int ol_i_id = 0;
             double total_amount = 0.0;
+
+            String update = "BEGIN BATCH ";
+
 
             for (String item : itemlineinfo) {
 
@@ -132,27 +92,37 @@ public class NewOrderTransaction extends Thread {
                 double s_ytd = stockInfoResults.getDouble("s_ytd");
                 int s_order_cnt = stockInfoResults.getInt("s_order_cnt");
                 int s_remote_cnt = stockInfoResults.getInt("s_remote_cnt");
+
+                 update = update + " UPDATE stock_level_transaction set s_quantity="+adjustedQuantiy+", s_ytd="+(s_ytd+ol_quantity)
+                        +", s_order_cnt="+(s_order_cnt+1)+", s_remote_cnt="+(s_remote_cnt+1)+" where s_w_id="+w_id+" and s_i_id="+ol_i_id+ ";";
+
+
+                /*
                 Statement stockUpdate = QueryBuilder.update("stock_level_transaction").with(QueryBuilder.set("s_quantity", adjustedQuantiy))
                         .and(QueryBuilder.set("s_ytd", s_ytd + ol_quantity))
                         .and(QueryBuilder.set("s_order_cnt", s_order_cnt + 1))
                         .and(QueryBuilder.set("s_remote_cnt", s_remote_cnt + 1))
                         .where(QueryBuilder.eq("s_w_id", w_id))
                         .and(QueryBuilder.eq("s_i_id", ol_i_id));
-                session.execute(stockUpdate);
+                session.execute(stockUpdate);*/
             }
-
             values.add(all_local);
             values.add(items);
-            Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values(columns, values);
-            session.execute(insertNewOrder);
 
+            update +="APPLY BATCH;";
+           Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values(columns, values);
+            session.execute(insertNewOrder);
+            session.execute(update);
             String[] districtStaticInfo = index.search(w_id + "" + d_id + "", "district-id", "district-csv").get(0).split(",");
             String[] warehouseStaticInfo = index.search(w_id + "", "warehouse-id", "warehouse-csv").get(0).split(",");
             String[] customerStaticInfo = index.search(w_id + "" + d_id + "" + c_id + "", "customer-id", "customer-csv").get(0).split(",");
 
             total_amount = total_amount * (1 + Double.parseDouble(districtStaticInfo[8]) + Double.parseDouble(warehouseStaticInfo[8]))
                     * (1 - Double.parseDouble(customerStaticInfo[15]));
-            System.out.println("Total amount : " + total_amount);
+            PrintWriter pw = TransactionDriver.pw;
+            pw.write("New Order Transaction--------"+"\n");
+            pw.write("Total amount : " + total_amount+"\n\n");
+            pw.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }

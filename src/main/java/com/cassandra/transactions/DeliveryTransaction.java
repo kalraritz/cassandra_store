@@ -34,14 +34,6 @@ public class DeliveryTransaction {
                 resultSetList.add(results);
             }
 
-            Statement CustomerDataUpdate1 = QueryBuilder.update("customer_data").with(QueryBuilder.set("c_balance",100.0 ))
-                    .where(QueryBuilder.eq("c_w_id", 1))
-                    .and(QueryBuilder.eq("c_d_id",1))
-                    .and(QueryBuilder.eq("c_id",2621));
-            session.execute(CustomerDataUpdate1);
-
-
-
             for(ResultSet resultSet: resultSetList){
                 for(Row r:resultSet.all()){
                     int order_id = r.getInt("o_id");

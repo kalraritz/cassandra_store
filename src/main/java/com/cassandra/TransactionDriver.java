@@ -5,6 +5,8 @@ import com.cassandra.CassandraSession;
 import com.cassandra.transactions.NewOrderTransaction;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 
@@ -24,6 +26,7 @@ public class TransactionDriver {
     public static String transactionDir=null;
     private static Logger logger = Logger.getLogger(CassandraSession.class);
 
+    public static  PrintWriter pw;
 
     private static Cluster cluster;
     private static Session session;
@@ -35,6 +38,8 @@ public class TransactionDriver {
             InputStream inputStream = new FileInputStream("C:\\DD\\cassandra_store\\src\\main\\resources\\config.properties");
             Properties properties = new Properties();
             properties.load(inputStream);
+            String output_path = properties.getProperty("output_path");
+            pw = new PrintWriter(new File(output_path));
             dir = properties.getProperty("csv_files_path");
             transactionDir = properties.getProperty("transactions_dir");
             lucene.initSearch(properties);
@@ -62,10 +67,15 @@ public class TransactionDriver {
         File[] listOfFiles = folder.listFiles();
         String line = "";
         int cnt = 0;
+
+        Date dateobj = new Date();
+
+
         for (File file : listOfFiles) {
             ArrayList<String> inputs = new ArrayList<String>();
             String fname = file.getName();
-            ArrayList<NewOrderTransaction> objs = new ArrayList<NewOrderTransaction>();
+            if(!fname.equals("0.txt"))
+                break;
             try (BufferedReader br = new BufferedReader(new FileReader(transactionDir + fname))) {
                 if(!fname.equals("0.txt"))
                     break;
@@ -81,66 +91,57 @@ public class TransactionDriver {
                     int lastLOrders = 0;
                     switch (tranType) {
                         case "N":
-//                            cnt++;
-//                            c_id = Integer.parseInt(content[1]);
-//                            w_id = Integer.parseInt(content[2]);
-//                            d_id = Integer.parseInt(content[3]);
-//                            int m = Integer.parseInt(content[4]);
-//                            ArrayList<String> itemlineinfo = new ArrayList<String>();
-//                            // read m line
-//                            while (m>0) {
-//                                --m;
-//                                String itemline = br.readLine();
-//                                if(itemline == null)
-//                                    throw new RuntimeException("items empty before iteration line->" + line);
-//                                itemlineinfo.add(itemline);
-//                            }
-//                            if(objs.size() <= 5000)
-//                                objs.add(new NewOrderTransaction(w_id,d_id,c_id,itemlineinfo));
-//                            if(objs.size()  == 5000 )
-//                            {
-//                                System.out.println("called");
-//                               //Thread th = new Thread(new NewOrderTransaction(objs,session,lucene));
-//                                //th.start();
-//                                objs = new ArrayList<NewOrderTransaction>();
-//                                //break;
-//                            }
-//
-//                            //new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
+                            cnt++;
+                            if(cnt % 1000 == 0)
+                                System.out.println(cnt);
+                            c_id = Integer.parseInt(content[1]);
+                            w_id = Integer.parseInt(content[2]);
+                            d_id = Integer.parseInt(content[3]);
+                            int m = Integer.parseInt(content[4]);
+                            ArrayList<String> itemlineinfo = new ArrayList<String>();
+                            // read m line
+                            while (m>0) {
+                                --m;
+                                String itemline = br.readLine();
+                                if(!(itemline == null))
+                                    itemlineinfo.add(itemline);
+                            }
+                            new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
                             break;
-                            case "P":
+                        case "P":
                             w_id = Integer.parseInt(content[1]);
                             d_id = Integer.parseInt(content[2]);
                             c_id = Integer.parseInt(content[3]);
                             payment = Double.parseDouble(content[4]);
-                                new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
+                            new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
                             break;
-//                        case "D":
-//                            w_id = Integer.parseInt(content[1]);
-//                            carrier_id = Integer.parseInt(content[2]);
-//                            new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
-//                            break;
-//                            case "O":
-//                                w_id = Integer.parseInt(content[1]);
-//                                d_id = Integer.parseInt(content[2]);
-//                                c_id = Integer.parseInt(content[3]);
-//                                new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session,lucene);
-////
-//                        case "S":
-//                            w_id = Integer.parseInt(content[1]);
-//                            d_id = Integer.parseInt(content[2]);
-//                            threshold = Integer.parseInt(content[3]);
-//                            lastLOrders = Integer.parseInt(content[4]);
-//                            new StockLevelTransaction().checkStockThreshold(w_id, d_id, threshold, lastLOrders, session,lucene);
-//                            break;
-//                        case "I":
-//                            w_id = Integer.parseInt(content[1]);
-//                            d_id = Integer.parseInt(content[2]);
-//                            lastLOrders = Integer.parseInt(content[3]);
-//                            new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
-//                            break;
-//                            case "T":
-//                                new TopBalanceTransaction().getTopBalance(session);
+                        case "D":
+                            w_id = Integer.parseInt(content[1]);
+                            carrier_id = Integer.parseInt(content[2]);
+                            new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
+                            break;
+                        case "O":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            c_id = Integer.parseInt(content[3]);
+                            new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session,lucene);
+                            break;
+                        case "S":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            threshold = Integer.parseInt(content[3]);
+                            lastLOrders = Integer.parseInt(content[4]);
+                            new StockLevelTransaction().checkStockThreshold(w_id, d_id, threshold, lastLOrders, session,lucene);
+                            break;
+                        case "I":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            lastLOrders = Integer.parseInt(content[3]);
+                            new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
+                            break;
+                        case "T":
+                            new TopBalanceTransaction().getTopBalance(session);
+                            break;
                     }
                 }
                 System.out.println(cnt);
@@ -149,5 +150,8 @@ public class TransactionDriver {
             }
 
         }
+        Date dateobj1 = new Date();
+        long diff = dateobj1.getTime() - dateobj.getTime();
+        System.out.println("Time : "+diff);
     }
 }

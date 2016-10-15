@@ -1,7 +1,9 @@
 package com.cassandra.transactions;
 
+import java.io.PrintWriter;
 import java.util.*;
 
+import com.cassandra.TransactionDriver;
 import com.cassandra.beans.Item;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
@@ -76,11 +78,17 @@ public class PopularItemTransaction {
 			}
 
 			//Iterate over order-item map and get max item id for each order
+			PrintWriter pw = TransactionDriver.pw;
+			pw.write("Popular Item Transaction--------"+"\n");
 			for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet())
 			{
-				System.out.println("Order Id : "+entry.getKey());
-				System.out.println("Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity));
+
+				pw.write("Order Id : "+entry.getKey()
+						+"\n"+"Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity)+"\n");
+				//System.out.println("Order Id : "+entry.getKey());
+				//System.out.println("Item Id : "+getMaxQuantity(entry.getValue(),orderItemQuantity));
 			}
+			pw.flush();
 		}
 		catch(Exception e)
 		{
