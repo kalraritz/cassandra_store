@@ -32,11 +32,18 @@ public class NewOrderTransaction extends Thread {
             // update next order
             // update stock level
 
-            Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-                    .where(QueryBuilder.eq("no_w_id", w_id)).and(QueryBuilder.eq("no_d_id", d_id));
+
+
+            String getDNextOID = "select no_d_next_o_id from next_order where no_w_id ="+1+" and no_d_id = 1";
             ResultSet results = session.execute(getDNextOID);
+            //Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
+              //      .where(QueryBuilder.eq("no_w_id", w_id)).and(QueryBuilder.eq("no_d_id", d_id));
+            //ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
 
+
+            String dNextOIDUpdate = "update next_order set no_d_next_o_id = "+(d_next_oid+1)+" where no_w_id ="+1+" and no_d_id = 1";
+            session.execute(dNextOIDUpdate);
 
             List<Object> values =  new ArrayList<Object>();
             values.add(w_id);
@@ -94,8 +101,6 @@ public class NewOrderTransaction extends Thread {
 
                 update = update + " UPDATE stock_level_transaction set s_quantity="+adjustedQuantiy+", s_ytd="+(s_ytd+ol_quantity)
                         +", s_order_cnt="+(s_order_cnt+1)+", s_remote_cnt="+(s_remote_cnt+1)+" where s_w_id="+w_id+" and s_i_id="+ol_i_id+ ";";
-
-
                 /*
                 Statement stockUpdate = QueryBuilder.update("stock_level_transaction").with(QueryBuilder.set("s_quantity", adjustedQuantiy))
                         .and(QueryBuilder.set("s_ytd", s_ytd + ol_quantity))

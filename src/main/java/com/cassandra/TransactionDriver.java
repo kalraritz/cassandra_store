@@ -78,9 +78,11 @@ public class TransactionDriver {
             if(!fname.equals("0.txt"))
                 break;
             try (BufferedReader br = new BufferedReader(new FileReader(transactionDir + fname))) {
-                if(!fname.equals("0.txt"))
-                    break;
                 while ((line = br.readLine()) != null) {
+                    cnt++;
+                    if(cnt % 1000 == 0)
+                        System.out.println(cnt);
+
                     String[] content = line.split(",");
                     String tranType = content[0];
                     int w_id = 0;
@@ -93,7 +95,7 @@ public class TransactionDriver {
                     switch (tranType) {
                         case "N":
                             cnt++;
-                            if(cnt % 1000 == 0)
+                            if(cnt % 100 == 0)
                                 System.out.println(cnt);
                             c_id = Integer.parseInt(content[1]);
                             w_id = Integer.parseInt(content[2]);
@@ -109,40 +111,40 @@ public class TransactionDriver {
                             }
                             new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
                             break;
-                        case "P":
-                            w_id = Integer.parseInt(content[1]);
-                            d_id = Integer.parseInt(content[2]);
-                            c_id = Integer.parseInt(content[3]);
-                            payment = Double.parseDouble(content[4]);
-                            new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
-                            break;
-                        case "D":
-                            w_id = Integer.parseInt(content[1]);
-                            carrier_id = Integer.parseInt(content[2]);
-                            new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
-                            break;
-                        case "O":
-                            w_id = Integer.parseInt(content[1]);
-                            d_id = Integer.parseInt(content[2]);
-                            c_id = Integer.parseInt(content[3]);
-                            new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session,lucene);
-                            break;
-                        case "S":
-                            w_id = Integer.parseInt(content[1]);
-                            d_id = Integer.parseInt(content[2]);
-                            threshold = Integer.parseInt(content[3]);
-                            lastLOrders = Integer.parseInt(content[4]);
-                            new StockLevelTransaction().checkStockThreshold(w_id, d_id, threshold, lastLOrders, session,lucene);
-                            break;
-                        case "I":
-                            w_id = Integer.parseInt(content[1]);
-                            d_id = Integer.parseInt(content[2]);
-                            lastLOrders = Integer.parseInt(content[3]);
-                            new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
-                            break;
-                        case "T":
-                            new TopBalanceTransaction().getTopBalance(session);
-                            break;
+//                        case "P":
+//                            w_id = Integer.parseInt(content[1]);
+//                            d_id = Integer.parseInt(content[2]);
+//                            c_id = Integer.parseInt(content[3]);
+//                            payment = Double.parseDouble(content[4]);
+//                            new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
+//                            break;
+//                        case "D":
+//                            w_id = Integer.parseInt(content[1]);
+//                            carrier_id = Integer.parseInt(content[2]);
+//                            new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
+//                            break;
+//                        case "O":
+//                            w_id = Integer.parseInt(content[1]);
+//                            d_id = Integer.parseInt(content[2]);
+//                            c_id = Integer.parseInt(content[3]);
+//                            new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session,lucene);
+//                            break;
+//                        case "S":
+//                            w_id = Integer.parseInt(content[1]);
+//                            d_id = Integer.parseInt(content[2]);
+//                            threshold = Integer.parseInt(content[3]);
+//                            lastLOrders = Integer.parseInt(content[4]);
+//                            new StockLevelTransaction().checkStockThreshold(w_id, d_id, threshold, lastLOrders, session,lucene);
+//                            break;
+//                        case "I":
+//                            w_id = Integer.parseInt(content[1]);
+//                            d_id = Integer.parseInt(content[2]);
+//                            lastLOrders = Integer.parseInt(content[3]);
+//                            new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
+//                            break;
+//                        case "T":
+//                            new TopBalanceTransaction().getTopBalance(session);
+//                            break;
                     }
                 }
             }
