@@ -23,7 +23,6 @@ public class NewOrderTransaction extends Thread {
 
     static final String[] columns_next_order = {"no_d_next_o_id"};
 
-
     public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index) {
         try {
             // put the order in order status trasaction
@@ -32,15 +31,9 @@ public class NewOrderTransaction extends Thread {
             // update next order
             // update stock level
 
-
-
             String getDNextOID = "select no_d_next_o_id from next_order where no_w_id ="+1+" and no_d_id = 1";
             ResultSet results = session.execute(getDNextOID);
-            //Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-              //      .where(QueryBuilder.eq("no_w_id", w_id)).and(QueryBuilder.eq("no_d_id", d_id));
-            //ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
-
 
             String dNextOIDUpdate = "update next_order set no_d_next_o_id = "+(d_next_oid+1)+" where no_w_id ="+1+" and no_d_id = 1";
             session.execute(dNextOIDUpdate);
@@ -62,7 +55,6 @@ public class NewOrderTransaction extends Thread {
 
             String update = "BEGIN BATCH ";
 
-
             for (String item : itemlineinfo) {
                 String[] itemline = item.split(",");
 
@@ -79,7 +71,6 @@ public class NewOrderTransaction extends Thread {
                     all_local = 0;
                 }
 
-
                 //Stock info update
                 String[] stockStaticInfo = index.search(w_id + "" + ol_i_id + "", "stock-id", "stock-csv").get(0).split(",");
                 double stockQuantity = Double.parseDouble(stockStaticInfo[2]);
@@ -87,7 +78,6 @@ public class NewOrderTransaction extends Thread {
                 if (adjustedQuantiy < 10) {
                     adjustedQuantiy = adjustedQuantiy + 100;
                 }
-
 
                 Statement stockInfo = QueryBuilder.select().all().from("stock_level_transaction")
                         .where(QueryBuilder.eq("s_w_id", w_id))
@@ -100,17 +90,7 @@ public class NewOrderTransaction extends Thread {
                 int s_remote_cnt = stockInfoResults.getInt("s_remote_cnt");
 
                 update = update + " UPDATE stock_level_transaction set s_quantity="+adjustedQuantiy+", s_ytd="+(s_ytd+ol_quantity)
-                        +", s_order_cnt="+(s_order_cnt+1)+", s_remote_cnt="+(s_remote_cnt+1)+" where s_w_id="+w_id+" and s_i_id="+ol_i_id+ ";";
-                /*
-                Statement stockUpdate = QueryBuilder.update("stock_level_transaction").with(QueryBuilder.set("s_quantity", adjustedQuantiy))
-                        .and(QueryBuilder.set("s_ytd", s_ytd + ol_quantity))
-                        .and(QueryBuilder.set("s_order_cnt", s_order_cnt + 1))
-                        .and(QueryBuilder.set("s_remote_cnt", s_remote_cnt + 1))
-                        .where(QueryBuilder.eq("s_w_id", w_id))
-                        .and(QueryBuilder.eq("s_i_id", ol_i_id));
-<<<<<<< HEAD
-                session.execute(stockUpdate);*/
-            }
+                        +", s_order_cnt="+(s_order_cnt+1)+", s_remote_cnt="+(s_remote_cnt+1)+" where s_w_id="+w_id+" and s_i_id="+ol_i_id+ ";";}
             values.add(all_local);
             values.add(items);
 

@@ -69,20 +69,20 @@ public class TransactionDriver {
         File[] listOfFiles = folder.listFiles();
         String line = "";
         int cnt = 0;
-
+        int ncnt = 0;
         Date dateobj = new Date();
-
         for (File file : listOfFiles) {
-            ArrayList<String> inputs = new ArrayList<String>();
             String fname = file.getName();
             if(!fname.equals("0.txt"))
-                break;
+                continue;
             try (BufferedReader br = new BufferedReader(new FileReader(transactionDir + fname))) {
                 while ((line = br.readLine()) != null) {
                     cnt++;
-                    if(cnt % 1000 == 0)
-                        System.out.println(cnt);
-
+                    if(cnt % 1000 == 0) {
+                        Date dateobj1 = new Date();
+                        long diff = dateobj1.getTime() - dateobj.getTime();
+                        System.out.println(cnt + " Time : " + diff/60000 + " min");
+                    }
                     String[] content = line.split(",");
                     String tranType = content[0];
                     int w_id = 0;
@@ -94,9 +94,9 @@ public class TransactionDriver {
                     int lastLOrders = 0;
                     switch (tranType) {
                         case "N":
-                            cnt++;
-                            if(cnt % 100 == 0)
-                                System.out.println(cnt);
+                            ncnt++;
+                            if(ncnt % 1000 == 0)
+                                System.out.println(ncnt + " N ran out of " + cnt);
                             c_id = Integer.parseInt(content[1]);
                             w_id = Integer.parseInt(content[2]);
                             d_id = Integer.parseInt(content[3]);
@@ -111,40 +111,40 @@ public class TransactionDriver {
                             }
                             new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
                             break;
-//                        case "P":
-//                            w_id = Integer.parseInt(content[1]);
-//                            d_id = Integer.parseInt(content[2]);
-//                            c_id = Integer.parseInt(content[3]);
-//                            payment = Double.parseDouble(content[4]);
-//                            new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
-//                            break;
-//                        case "D":
-//                            w_id = Integer.parseInt(content[1]);
-//                            carrier_id = Integer.parseInt(content[2]);
-//                            new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
-//                            break;
-//                        case "O":
-//                            w_id = Integer.parseInt(content[1]);
-//                            d_id = Integer.parseInt(content[2]);
-//                            c_id = Integer.parseInt(content[3]);
-//                            new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session,lucene);
-//                            break;
-//                        case "S":
-//                            w_id = Integer.parseInt(content[1]);
-//                            d_id = Integer.parseInt(content[2]);
-//                            threshold = Integer.parseInt(content[3]);
-//                            lastLOrders = Integer.parseInt(content[4]);
-//                            new StockLevelTransaction().checkStockThreshold(w_id, d_id, threshold, lastLOrders, session,lucene);
-//                            break;
-//                        case "I":
-//                            w_id = Integer.parseInt(content[1]);
-//                            d_id = Integer.parseInt(content[2]);
-//                            lastLOrders = Integer.parseInt(content[3]);
-//                            new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
-//                            break;
-//                        case "T":
-//                            new TopBalanceTransaction().getTopBalance(session);
-//                            break;
+                        case "P":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            c_id = Integer.parseInt(content[3]);
+                            payment = Double.parseDouble(content[4]);
+                            new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
+                            break;
+                        case "D":
+                            w_id = Integer.parseInt(content[1]);
+                            carrier_id = Integer.parseInt(content[2]);
+                            new DeliveryTransaction().readDeliveryTransaction(w_id,carrier_id,session);
+                            break;
+                        case "O":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            c_id = Integer.parseInt(content[3]);
+                            new OrderStatusTransaction().readOrderStatus(w_id,d_id,c_id,session,lucene);
+                            break;
+                        case "S":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            threshold = Integer.parseInt(content[3]);
+                            lastLOrders = Integer.parseInt(content[4]);
+                            new StockLevelTransaction().checkStockThreshold(w_id, d_id, threshold, lastLOrders, session,lucene);
+                            break;
+                        case "I":
+                            w_id = Integer.parseInt(content[1]);
+                            d_id = Integer.parseInt(content[2]);
+                            lastLOrders = Integer.parseInt(content[3]);
+                            new PopularItemTransaction().checkPopularItem(w_id,d_id,lastLOrders,session);
+                            break;
+                        case "T":
+                            new TopBalanceTransaction().getTopBalance(session);
+                            break;
                     }
                 }
             }
@@ -155,6 +155,7 @@ public class TransactionDriver {
             Date dateobj1 = new Date();
             long diff = dateobj1.getTime() - dateobj.getTime();
             System.out.println("Time : "+diff);
+            System.exit(0);
         }
 
     }
