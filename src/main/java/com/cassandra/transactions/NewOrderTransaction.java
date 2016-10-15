@@ -18,52 +18,7 @@ import java.util.concurrent.RunnableFuture;
 public class NewOrderTransaction extends Thread {
 
 
-
-
-    public NewOrderTransaction(ArrayList<NewOrderTransaction> listOfObjects,Session session,Lucene index){
-        if(this.listOfObjects == null)
-        {
-            this.listOfObjects =  new ArrayList<>(listOfObjects);
-        }
-        if(NewOrderTransaction.session == null || NewOrderTransaction.index == null)
-        {
-            NewOrderTransaction.session = session;
-            NewOrderTransaction.index = index;
-        }
-    }
-
-    private int w_id;
-    private int d_id;
-    private int c_id;
-    private ArrayList<String> itemlineinfo;
-    private static Session session;
-    private static Lucene index;
-    private ArrayList<NewOrderTransaction> listOfObjects;
     static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id","o_c_id","o_entry_d","o_carrier_id","o_ol_cnt","o_all_local","o_items");
-
-    public NewOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo) {
-        this.w_id = w_id;
-        this.d_id = d_id;
-        this.c_id = c_id;
-        this.itemlineinfo = itemlineinfo;
-
-    }
-
-
-    @Override
-    public void run() {
-        ArrayList<NewOrderTransaction> objs =  new ArrayList<>(this.listOfObjects) ;
-        System.out.println(objs.size());
-        for (NewOrderTransaction ob :objs)
-        {
-            final String[] columns_next_order = {"no_d_next_o_id"};
-            Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
-                    .where(QueryBuilder.eq("no_w_id", ob.w_id)).and(QueryBuilder.eq("no_d_id", ob.d_id));
-            ResultSet results = session.execute(getDNextOID);
-            int d_next_oid = results.one().getInt("no_d_next_o_id");
-            List<Object> values =  new ArrayList<Object>();
-        }
-    }
 
     public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index) {
         try {
@@ -93,7 +48,7 @@ public class NewOrderTransaction extends Thread {
             int ol_i_id = 0;
             double total_amount = 0.0;
 
-            for (String item : itemlineinfo) {
+            /*for (String item : itemlineinfo) {
 
                 String[] itemline = item.split(",");
 
@@ -136,7 +91,7 @@ public class NewOrderTransaction extends Thread {
                         .where(QueryBuilder.eq("s_w_id", w_id))
                         .and(QueryBuilder.eq("s_i_id", ol_i_id));
                 session.execute(stockUpdate);
-            }
+            }*/
 
             values.add(all_local);
             values.add(items);

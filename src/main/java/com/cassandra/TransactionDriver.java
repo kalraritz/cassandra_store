@@ -77,6 +77,8 @@ public class TransactionDriver {
                     switch (tranType) {
                         case "N":
                             cnt++;
+                            if(cnt % 100 == 0)
+                                System.out.println("running " + cnt);
                             c_id = Integer.parseInt(content[1]);
                             w_id = Integer.parseInt(content[2]);
                             d_id = Integer.parseInt(content[3]);
@@ -85,24 +87,11 @@ public class TransactionDriver {
                             // read m line
                             while (m>0) {
                                 --m;
-                                String itemline = br.readLine();
-                                if(itemline == null)
-                                    throw new RuntimeException("items empty before iteration line->" + line);
-                                itemlineinfo.add(itemline);
+                                itemlineinfo.add(br.readLine());
                             }
-                            if(objs.size() <= 5000)
-                                objs.add(new NewOrderTransaction(w_id,d_id,c_id,itemlineinfo));
-                            if(objs.size()  == 5000 )
-                            {
-                                System.out.println("called");
-                               //Thread th = new Thread(new NewOrderTransaction(objs,session,lucene));
-                                //th.start();
-                                objs = new ArrayList<NewOrderTransaction>();
-                                //break;
-                            }
-
-//                            new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
+                            new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
                             break;
+
 //                            case "P":
 //                            w_id = Integer.parseInt(content[1]);
 //                            d_id = Integer.parseInt(content[2]);
