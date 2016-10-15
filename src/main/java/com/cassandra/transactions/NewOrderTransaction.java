@@ -34,10 +34,7 @@ public class NewOrderTransaction extends Thread {
             String getDNextOID = "select no_d_next_o_id from next_order where no_w_id ="+1+" and no_d_id = 1";
             ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
-
             String dNextOIDUpdate = "update next_order set no_d_next_o_id = "+(d_next_oid+1)+" where no_w_id ="+1+" and no_d_id = 1";
-            session.execute(dNextOIDUpdate);
-
             List<Object> values =  new ArrayList<Object>();
             values.add(w_id);
             values.add(d_id);
@@ -54,6 +51,7 @@ public class NewOrderTransaction extends Thread {
             double total_amount = 0.0;
 
             String update = "BEGIN BATCH ";
+            update = update + dNextOIDUpdate + ";";
 
             for (String item : itemlineinfo) {
                 String[] itemline = item.split(",");
