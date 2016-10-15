@@ -19,14 +19,14 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import static com.cassandra.TransactionDriver.pw;
+
 
 
 public class PaymentTransaction {
 	static String ytdcolums[]={"no_w_ytd","no_d_ytd"};
 	static 	String customercolums[]={"c_balance","c_ytd_payment","c_payment_cnt"};
 	static Statement statement ;
-	public void readOrderStatus(int w_id,int d_id,int c_id,double payment,Session session,Lucene lucene)
+	public void readOrderStatus(int w_id,int d_id,int c_id,double payment,Session session,Lucene lucene, PrintWriter printWriter)
 	{
 		try
 		{
@@ -56,9 +56,8 @@ public class PaymentTransaction {
 
 			String customerStaticInfo = lucene.search(w_id+ "" + d_id+""+c_id, "customer-id", "customer-csv").get(0);
 			String indexData[] = customerStaticInfo.split(",");
-            PrintWriter pw = TransactionDriver.pw;
-            pw.write("Popular Item Transaction--------"+"\n");
-            pw.write("Customer Identifier : "+w_id+""+d_id+""+c_id
+            printWriter.write("Popular Item Transaction--------"+"\n");
+            printWriter.write("Customer Identifier : "+w_id+""+d_id+""+c_id
                     +"\n"+"Customer name : " +indexData[3]+" "+indexData[4]+" "+indexData[5]+"\n"+
                     "Customer address : "+indexData[6]+" "+indexData[7]+" "+indexData[8]+" "+indexData[9]+
                     " "+indexData[10]+"\n"+"Customer phone : "+indexData[11]+"\n"+"Entry created date : "+indexData[11]+"\n"+
@@ -86,7 +85,7 @@ public class PaymentTransaction {
 */
 			String warehouseStaticInfo = lucene.search(w_id+"", "warehouse-id", "warehouse-csv").get(0);
 			indexData = warehouseStaticInfo.split(",");
-            pw.write("Warehouse address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
+            printWriter.write("Warehouse address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
                     + indexData[5]+ " " + indexData[6]+"\n");
 
             /*
@@ -95,9 +94,9 @@ public class PaymentTransaction {
 
 			String districtStaticInfo = lucene.search(w_id+""+d_id, "district-id", "district-csv").get(0);
 			indexData = districtStaticInfo.split(",");
-            pw.write("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
+            printWriter.write("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
                     + indexData[5]+ " " + indexData[6]+"\n"+"Payment amount : "+payment+"\n");
-            pw.flush();
+            printWriter.flush();
             /*
 			System.out.println("District address : "+ indexData[2]+ " " + indexData[3]+ " " + indexData[4] + " "
 					+ indexData[5]+ " " + indexData[6]);

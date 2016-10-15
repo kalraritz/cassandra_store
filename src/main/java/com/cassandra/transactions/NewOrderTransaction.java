@@ -17,13 +17,13 @@ import java.util.concurrent.RunnableFuture;
 /**
  * Created by ritesh on 09/10/16.
  */
-public class NewOrderTransaction extends Thread {
+public class NewOrderTransaction {
 
     static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id","o_c_id","o_entry_d","o_carrier_id","o_ol_cnt","o_all_local","o_items");
 
     static final String[] columns_next_order = {"no_d_next_o_id"};
 
-    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index) {
+    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index, PrintWriter printWriter) {
         try {
             // put the order in order status trasaction
             // put the order status transaction
@@ -104,10 +104,9 @@ public class NewOrderTransaction extends Thread {
 
             total_amount = total_amount * (1 + Double.parseDouble(districtStaticInfo[8]) + Double.parseDouble(warehouseStaticInfo[8]))
                     * (1 - Double.parseDouble(customerStaticInfo[15]));
-            PrintWriter pw = TransactionDriver.pw;
-            pw.write("New Order Transaction--------"+"\n");
-            pw.write("Total amount : " + total_amount+"\n\n");
-            pw.flush();
+            printWriter.write("New Order Transaction--------"+"\n");
+            printWriter.write("Total amount : " + total_amount+"\n\n");
+            printWriter.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }

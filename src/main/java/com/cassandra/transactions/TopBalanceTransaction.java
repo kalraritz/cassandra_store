@@ -47,7 +47,7 @@ public class TopBalanceTransaction {
 	final String[] columns_customer = {"c_id","c_balance"};
 
 
-	public void getTopBalance(Session session)
+	public void getTopBalance(Session session, PrintWriter printWriter)
 	{
 		try
 		{
@@ -62,17 +62,16 @@ public class TopBalanceTransaction {
 			Collections.sort(objs,new CustomerComparator());
 
 			int itr = 0;
-			PrintWriter pw = TransactionDriver.pw;
 			for(CustomerBalance c : objs)
 			{
 				itr++;
-				pw.write("Top Balance Transaction--------"+"\n");
-				pw.write("Customer Id : "+c.getCid()+"\n");
-				pw.write("Customer Balance : "+c.getC_balance()+"\n");
+				printWriter.write("Top Balance Transaction--------"+"\n");
+				printWriter.write("Customer Id : "+c.getCid()+"\n");
+				printWriter.write("Customer Balance : "+c.getC_balance()+"\n");
 				if(itr == 10)
 					break;
 			}
-			pw.flush();
+			printWriter.flush();
 		}
 		catch(Exception e)
 		{
