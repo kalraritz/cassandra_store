@@ -9,6 +9,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by manisha on 10/10/2016.
@@ -16,12 +17,14 @@ import java.util.List;
 public class StockCsv {
     private static Logger logger = Logger.getLogger(StockCsv.class);
 
-    public void prepareCsv() {
+    public void prepareCsv(Properties properties) {
+        String csv_dump_path = properties.getProperty("csv_dump_path");
+        String csv_files_path = properties.getProperty("csv_files_path");
         PrintWriter pw = null;
         logger.info("Preparing csv for stock...");
         try{
-            pw= new PrintWriter(new File("/Users/manisha/NUS/DD/project/csvFiles/stock.csv"));
-            InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/stock.csv");
+            pw= new PrintWriter(new File(csv_dump_path + "stock.csv"));
+            InputStream inputStream = new FileInputStream(csv_files_path + "stock.csv");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             CSVReader stockCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = stockCsv.iterator();

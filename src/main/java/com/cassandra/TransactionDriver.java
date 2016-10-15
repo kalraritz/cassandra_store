@@ -1,9 +1,6 @@
 package com.cassandra;
 
-import com.cassandra.CassandraInit;
-import com.cassandra.CassandraSession;
 import com.cassandra.transactions.NewOrderTransaction;
-
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,11 +11,14 @@ import com.cassandra.beans.Item;
 import com.cassandra.beans.ItemCodec;
 import com.cassandra.transactions.*;
 import com.cassandra.utilities.Lucene;
-import com.datastax.driver.core.*;
-import org.apache.log4j.BasicConfigurator;
-
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Properties;
 
 public class TransactionDriver {
 
@@ -35,7 +35,9 @@ public class TransactionDriver {
     public static void main(String args[]) {
         Lucene lucene = new Lucene();
         try {
-            InputStream inputStream = new FileInputStream("C:\\DD\\cassandra_store\\src\\main\\resources\\config.properties");
+            String configFilePath = System.getenv("DD_CONFIG_FILE");
+            //export DD_CONFIG_FILE="/Users/ritesh/Documents/projects/nus/config.properties"
+            InputStream inputStream = new FileInputStream(configFilePath);
             Properties properties = new Properties();
             properties.load(inputStream);
             String output_path = properties.getProperty("output_path");
@@ -69,7 +71,6 @@ public class TransactionDriver {
         int cnt = 0;
 
         Date dateobj = new Date();
-
 
         for (File file : listOfFiles) {
             ArrayList<String> inputs = new ArrayList<String>();
@@ -144,14 +145,15 @@ public class TransactionDriver {
                             break;
                     }
                 }
-                System.out.println(cnt);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
-
+            System.out.println(cnt);
+            Date dateobj1 = new Date();
+            long diff = dateobj1.getTime() - dateobj.getTime();
+            System.out.println("Time : "+diff);
         }
-        Date dateobj1 = new Date();
-        long diff = dateobj1.getTime() - dateobj.getTime();
-        System.out.println("Time : "+diff);
+
     }
 }

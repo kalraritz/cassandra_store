@@ -24,7 +24,7 @@ public class NewOrderTransactionCsv {
         PrintWriter pw = null;
         logger.info("Preparing csv for NewOrderTransaction...");
         try{
-            pw = new PrintWriter(new File(csv_dump_path+"new_order_transaction_csv"));
+            pw = new PrintWriter(new File(csv_dump_path+"new_order_transaction.csv"));
             InputStream inputStream = new FileInputStream(csv_files_path+"order.csv");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             CSVReader orderCsv = new CSVReader(inputStreamReader);
@@ -33,9 +33,6 @@ public class NewOrderTransactionCsv {
             {
                 List<String> newOrderRowList = new ArrayList<>();
                 String[] orderRow = iterator.next();
-                if(orderRow[0].equals("2")){
-                    break;
-                }
                 newOrderRowList.add(orderRow[0]);
                 newOrderRowList.add(orderRow[1]);
                 newOrderRowList.add(orderRow[2]);

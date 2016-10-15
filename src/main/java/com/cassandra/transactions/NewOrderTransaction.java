@@ -21,7 +21,8 @@ public class NewOrderTransaction extends Thread {
 
     static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id","o_c_id","o_entry_d","o_carrier_id","o_ol_cnt","o_all_local","o_items");
 
-   static final String[] columns_next_order = {"no_d_next_o_id"};
+    static final String[] columns_next_order = {"no_d_next_o_id"};
+
 
     public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index) {
         try {
@@ -35,7 +36,6 @@ public class NewOrderTransaction extends Thread {
                     .where(QueryBuilder.eq("no_w_id", w_id)).and(QueryBuilder.eq("no_d_id", d_id));
             ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
-
 
 
             List<Object> values =  new ArrayList<Object>();
@@ -57,7 +57,6 @@ public class NewOrderTransaction extends Thread {
 
 
             for (String item : itemlineinfo) {
-
                 String[] itemline = item.split(",");
 
                 //Order line info update
@@ -93,7 +92,7 @@ public class NewOrderTransaction extends Thread {
                 int s_order_cnt = stockInfoResults.getInt("s_order_cnt");
                 int s_remote_cnt = stockInfoResults.getInt("s_remote_cnt");
 
-                 update = update + " UPDATE stock_level_transaction set s_quantity="+adjustedQuantiy+", s_ytd="+(s_ytd+ol_quantity)
+                update = update + " UPDATE stock_level_transaction set s_quantity="+adjustedQuantiy+", s_ytd="+(s_ytd+ol_quantity)
                         +", s_order_cnt="+(s_order_cnt+1)+", s_remote_cnt="+(s_remote_cnt+1)+" where s_w_id="+w_id+" and s_i_id="+ol_i_id+ ";";
 
 
@@ -104,13 +103,14 @@ public class NewOrderTransaction extends Thread {
                         .and(QueryBuilder.set("s_remote_cnt", s_remote_cnt + 1))
                         .where(QueryBuilder.eq("s_w_id", w_id))
                         .and(QueryBuilder.eq("s_i_id", ol_i_id));
+<<<<<<< HEAD
                 session.execute(stockUpdate);*/
             }
             values.add(all_local);
             values.add(items);
 
             update +="APPLY BATCH;";
-           Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values(columns, values);
+            Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values(columns, values);
             session.execute(insertNewOrder);
             session.execute(update);
             String[] districtStaticInfo = index.search(w_id + "" + d_id + "", "district-id", "district-csv").get(0).split(",");

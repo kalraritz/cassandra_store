@@ -19,6 +19,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import static com.cassandra.TransactionDriver.pw;
 
 
 public class PaymentTransaction {
@@ -36,12 +37,6 @@ public class PaymentTransaction {
 			Row results= session.execute(statement).one();
 			double d_ytd = results.getDouble("no_d_ytd")+payment;
 			double w_ytd = results.getDouble("no_w_ytd")+payment;
-
-            statement = QueryBuilder.update("next_order").with(QueryBuilder.set("no_w_ytd",w_ytd ))
-					.and(QueryBuilder.set("no_d_ytd", d_ytd))
-					.where(QueryBuilder.eq("no_w_id", w_id))
-					.and(QueryBuilder.eq("no_d_id",d_id));
-            session.execute(statement);
 
 			statement = QueryBuilder.select(customercolums).from("customer_data")
 					.where(QueryBuilder.eq("c_w_id",w_id))

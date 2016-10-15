@@ -6,3 +6,5 @@ __MACOSX
 target/
 # ignore lucene
 lucene-index
+# out
+out

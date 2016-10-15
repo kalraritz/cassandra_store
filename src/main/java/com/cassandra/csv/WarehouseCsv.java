@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by manisha on 10/10/2016.
@@ -16,12 +17,14 @@ public class WarehouseCsv {
 
     private static Logger logger = Logger.getLogger(WarehouseCsv.class);
 
-    public void prepareCsv() {
+    public void prepareCsv(Properties properties) {
+        String csv_dump_path = properties.getProperty("csv_dump_path");
+        String csv_files_path = properties.getProperty("csv_files_path");
         PrintWriter pw = null;
         logger.info("Preparing csv for warehouse....");
         try{
-            pw= new PrintWriter(new File("/Users/manisha/NUS/DD/project/csvFiles/warehouse.csv"));
-            InputStream inputStream = new FileInputStream("/Users/manisha/Downloads/D8-data/warehouse.csv");
+            pw= new PrintWriter(new File(csv_dump_path + "warehouse.csv"));
+            InputStream inputStream = new FileInputStream(csv_files_path + "warehouse.csv");
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             CSVReader warehouseCsv = new CSVReader(inputStreamReader);
             Iterator<String[]> iterator = warehouseCsv.iterator();
