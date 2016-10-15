@@ -39,7 +39,7 @@ public class PaymentTransaction {
 
             Row results;
 
-            String s = "UPDATE newhood.next_order SET no_w_ytd="+1000+",no_d_ytd="+1000
+            String s = "UPDATE thehood.next_order SET no_w_ytd="+1000+",no_d_ytd="+1000
                         +" WHERE no_w_id="+w_id+" AND no_d_id="+d_id;
             session.execute(s);
 

@@ -1,22 +1,15 @@
 package com.cassandra;
 
-import com.cassandra.CassandraInit;
-import com.cassandra.CassandraSession;
 import com.cassandra.transactions.NewOrderTransaction;
-
-import java.io.*;
-import java.util.*;
-import java.util.ArrayList;
-
-import com.cassandra.beans.Item;
-import com.cassandra.beans.ItemCodec;
-import com.cassandra.transactions.*;
 import com.cassandra.utilities.Lucene;
-import com.datastax.driver.core.*;
-import org.apache.log4j.BasicConfigurator;
-
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Properties;
 
 public class TransactionDriver {
 
@@ -83,40 +76,40 @@ public class TransactionDriver {
                     int lastLOrders = 0;
                     switch (tranType) {
                         case "N":
-//                            cnt++;
-//                            c_id = Integer.parseInt(content[1]);
-//                            w_id = Integer.parseInt(content[2]);
-//                            d_id = Integer.parseInt(content[3]);
-//                            int m = Integer.parseInt(content[4]);
-//                            ArrayList<String> itemlineinfo = new ArrayList<String>();
-//                            // read m line
-//                            while (m>0) {
-//                                --m;
-//                                String itemline = br.readLine();
-//                                if(itemline == null)
-//                                    throw new RuntimeException("items empty before iteration line->" + line);
-//                                itemlineinfo.add(itemline);
-//                            }
-//                            if(objs.size() <= 5000)
-//                                objs.add(new NewOrderTransaction(w_id,d_id,c_id,itemlineinfo));
-//                            if(objs.size()  == 5000 )
-//                            {
-//                                System.out.println("called");
-//                               //Thread th = new Thread(new NewOrderTransaction(objs,session,lucene));
-//                                //th.start();
-//                                objs = new ArrayList<NewOrderTransaction>();
-//                                //break;
-//                            }
-//
-//                            //new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
+                            cnt++;
+                            c_id = Integer.parseInt(content[1]);
+                            w_id = Integer.parseInt(content[2]);
+                            d_id = Integer.parseInt(content[3]);
+                            int m = Integer.parseInt(content[4]);
+                            ArrayList<String> itemlineinfo = new ArrayList<String>();
+                            // read m line
+                            while (m>0) {
+                                --m;
+                                String itemline = br.readLine();
+                                if(itemline == null)
+                                    throw new RuntimeException("items empty before iteration line->" + line);
+                                itemlineinfo.add(itemline);
+                            }
+                            if(objs.size() <= 5000)
+                                objs.add(new NewOrderTransaction(w_id,d_id,c_id,itemlineinfo));
+                            if(objs.size()  == 5000 )
+                            {
+                                System.out.println("called");
+                               //Thread th = new Thread(new NewOrderTransaction(objs,session,lucene));
+                                //th.start();
+                                objs = new ArrayList<NewOrderTransaction>();
+                                //break;
+                            }
+
+//                            new NewOrderTransaction().newOrderTransaction(w_id, d_id, c_id, itemlineinfo, session,lucene);
                             break;
-                            case "P":
-                            w_id = Integer.parseInt(content[1]);
-                            d_id = Integer.parseInt(content[2]);
-                            c_id = Integer.parseInt(content[3]);
-                            payment = Double.parseDouble(content[4]);
-                                new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
-                            break;
+//                            case "P":
+//                            w_id = Integer.parseInt(content[1]);
+//                            d_id = Integer.parseInt(content[2]);
+//                            c_id = Integer.parseInt(content[3]);
+//                            payment = Double.parseDouble(content[4]);
+//                                new PaymentTransaction().readOrderStatus(w_id,d_id,c_id,payment,session,lucene);
+//                            break;
 //                        case "D":
 //                            w_id = Integer.parseInt(content[1]);
 //                            carrier_id = Integer.parseInt(content[2]);

@@ -121,6 +121,12 @@ public class Lucene {
     public static void main(String[] args) {
         Lucene lucene = new Lucene();
         try {
+            String configFilePath = System.getenv("DD_CONFIG_FILE");
+            InputStream inputStream = new FileInputStream(configFilePath);
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            lucene.initSearch(properties);
+
             IndexWriter indexWriter = lucene.createIndex();
             lucene.addDocumentToIndex(indexWriter, "item.csv", "item-csv", "item-id");
             lucene.addDocumentToIndex(indexWriter, "order-line.csv", "order-line-csv", "order-id");

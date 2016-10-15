@@ -15,19 +15,20 @@ public class CsvLoader {
         Properties properties =null;
         Lucene lucene = new Lucene();
         try {
-            InputStream inputStream = new FileInputStream("/Users/manisha/NUS/DD/gitProjects/cassandra_store/src/main/resources/config.properties");
+            String configFilePath = System.getenv("DD_CONFIG_FILE");
+            InputStream inputStream = new FileInputStream(configFilePath);
             properties = new Properties();
             properties.load(inputStream);
             lucene.initSearch(properties);
-//        new CustomerDataCsv().prepareCsv();
+        new CustomerDataCsv().prepareCsv(properties);
 //        new OrderStatusTransactionCsv().prepareCsv();
-            new NewOrderTransactionCsv().prepareCsv(lucene, properties);
-//        new NextOrderCsv().prepareCsv();
-//        new StockLevelTransactionCsv().prepareCsv();
-//        new WarehouseCsv().prepareCsv();
-//        new DistrictCsv().prepareCsv();
-//        new CustomerCsv().prepareCsv();
-//        new StockCsv().prepareCsv();
+//            new NewOrderTransactionCsv().prepareCsv(lucene, properties);
+        new NextOrderCsv().prepareCsv(properties);
+        new StockLevelTransactionCsv().prepareCsv(properties);
+        new WarehouseCsv().prepareCsv(properties);
+        new DistrictCsv().prepareCsv(properties);
+        new CustomerCsv().prepareCsv(properties);
+//        new StockCsv().prepareCsv(properties);
         } catch (Exception e) {
             e.printStackTrace();
         }

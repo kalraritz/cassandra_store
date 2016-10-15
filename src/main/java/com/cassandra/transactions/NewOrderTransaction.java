@@ -65,8 +65,6 @@ public class NewOrderTransaction extends Thread {
         }
     }
 
-
-
     public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index) {
         try {
             // put the order in order status trasaction
@@ -80,7 +78,6 @@ public class NewOrderTransaction extends Thread {
             ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
             List<Object> values =  new ArrayList<Object>();
-
 
             values.add(w_id);
             values.add(d_id);
