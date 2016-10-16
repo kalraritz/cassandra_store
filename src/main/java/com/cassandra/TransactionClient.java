@@ -40,9 +40,12 @@ public class TransactionClient {
             String diff = format("%02dmin%02dsec", TimeUnit.MILLISECONDS.toMinutes(timeInMs),
                     TimeUnit.MILLISECONDS.toSeconds(timeInMs) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMs))
             );
+            printWriter.write("Total Number of transactions processed: " + TransactionClient.totalNumberOfTransactionsProcessed+"\n");
+            printWriter.write("Total elapsed time for processing the transactions (in seconds) : "+ diff+"\n");
             logger.info("Total Number of transactions processed: " + TransactionClient.totalNumberOfTransactionsProcessed);
             logger.info("Total elapsed time for processing the transactions (in seconds) : "+ diff);
             double transactionsPerSecond = (double) TransactionClient.totalNumberOfTransactionsProcessed / TimeUnit.MILLISECONDS.toSeconds(timeInMs);
+            printWriter.write("Transaction throughput (number of transactions processed per second)::" + transactionsPerSecond+"\n");
             logger.info("Transaction throughput (number of transactions processed per second)::" + transactionsPerSecond);
         } catch (Exception e) {
             e.printStackTrace();
