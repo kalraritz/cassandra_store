@@ -134,7 +134,7 @@ public class TransactionDriver {
                         w_id = Integer.parseInt(content[1]);
                         d_id = Integer.parseInt(content[2]);
                         lastLOrders = Integer.parseInt(content[3]);
-                        new PopularItemTransaction().checkPopularItem(w_id, d_id, lastLOrders, session, printWriter);
+                        new PopularItemTransaction().checkPopularItem(w_id, d_id, lastLOrders, session, printWriter, lucene);
                         ++noOfTransactionsExecuted;
                         break;
                     case "T":

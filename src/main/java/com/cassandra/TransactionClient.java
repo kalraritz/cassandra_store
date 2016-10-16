@@ -1,8 +1,5 @@
-package com.cassandra.transactions;
+package com.cassandra;
 
-import com.cassandra.CassandraSession;
-import com.cassandra.TransactionDriver;
-import com.cassandra.csv.DistrictCsv;
 import com.cassandra.utilities.Lucene;
 import com.datastax.driver.core.Session;
 import org.apache.log4j.Logger;

@@ -1,6 +1,7 @@
 package com.cassandra.transactions;
 
 import com.cassandra.beans.Item;
+import com.cassandra.utilities.Lucene;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
@@ -15,7 +16,7 @@ public class PopularItemTransaction {
     final String[] columns_next_order = {"no_d_next_o_id"};
     final String[] columns_stock = {"s_i_id", "s_quantity"};
 
-    public void checkPopularItem(int w_id, int d_id, int num_last_orders, Session session, PrintWriter printWriter) {
+    public void checkPopularItem(int w_id, int d_id, int num_last_orders, Session session, PrintWriter printWriter, Lucene lucene) {
         try {
             //Get the latest d_next_oid
             Statement getDNextOID = QueryBuilder.select(columns_next_order).from("next_order")
@@ -35,21 +36,21 @@ public class PopularItemTransaction {
             Set<Integer> itemids = new HashSet<Integer>();
             Map<Integer, List<Integer>> orderItemsMapping = new HashMap<Integer, List<Integer>>();
 
-
             int c_id = 0;
-            String output = "";
-
             printWriter.write("POPULAR ITEM TRANSACTION--------" + "\n");
-            printWriter.write("(W_ID, D_ID, NUM_OF_LAST_ORDER_TO_BE_EXAMINED)("+ w_id + ", "+ d_id + ", " + num_last_orders + ")");
-            printWriter.write("(W_ID, D_ID)("+ w_id + ","+ d_id + ")");
-
+            printWriter.write("(W_ID, D_ID, NUM_OF_LAST_ORDER_TO_BE_EXAMINED)(" + w_id + ", " + d_id + ", " + num_last_orders + ")\n");
 
             //Add itemids to a list to fetch the quantity for each item
             //Create a map of order-items.
             for (Row r : results.all()) {
                 Set<Item> orders = r.getSet("o_items", Item.class);
                 int order_id = r.getInt("o_id");
+                Date oentryd = r.getTimestamp("o_entry_d");
                 c_id = r.getInt("c_id");
+                String customerStaticInfo = lucene.search(w_id + "" + d_id + "" + c_id, "customer-id", "customer-csv").get(0);
+                String indexData[] = customerStaticInfo.split(",");
+                String custname = "Customer name: " + indexData[3] + " " + indexData[4] + " " + indexData[5];
+                printWriter.write("(O_ID, O_ENTRY_D, CUST_NAME)(" + order_id + ", " + oentryd + ", " + custname + "\n");
                 Iterator<Item> order_items = orders.iterator();
                 while (order_items.hasNext()) {
                     Item item = order_items.next();
@@ -71,16 +72,32 @@ public class PopularItemTransaction {
                     .and(QueryBuilder.in("s_i_id", itemids.toArray()));
             results = session.execute(itemPrices);
             Map<Integer, Double> orderItemQuantity = new HashMap<Integer, Double>();
+            Map<Integer, String> orderItemName = new HashMap<Integer, String>();
             for (Row r : results.all()) {
                 double item_quantity = r.getDouble("s_quantity");
                 int item_id = r.getInt("s_i_id");
                 orderItemQuantity.put(item_id, item_quantity);
+                String[] itemStaticInfo = lucene.search(item_id + "", "item-id", "item-csv").get(0).split(",");
+                String itemName = itemStaticInfo[1];
+                orderItemName.put(item_id, itemName);
             }
 
+            Map<Integer, List<Integer>> itemOrdersMap = new HashMap<Integer, List<Integer>>();
+            for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet()) {
+                for (Integer itemid : entry.getValue()) {
+                    List<Integer> items = null;
+                    if (itemOrdersMap.get(itemid) == null) {
+                        items = new ArrayList<Integer>();
+                    } else {
+                        items = itemOrdersMap.get(itemid);
+                    }
+                    items.add(entry.getKey());
+                }
+            }
             //Iterate over order-item map and get max item id for each order
             for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet()) {
-                printWriter.write("Order Id : " + entry.getKey()
-                        + "\n" + "Item Id : " + getMaxQuantity(entry.getValue(), orderItemQuantity) + "\n");
+                int popularItem = getMaxQuantity(entry.getValue(), orderItemQuantity);
+                printWriter.write("(ITEM_NAME, ITEM_QUANTITY, PERCENTAGE OF ORDERS IN S THAT CONTAINS THIS ITEM)(" + orderItemName.get(popularItem) + "," + orderItemQuantity.get(popularItem) + ", " + ((itemOrdersMap.get(popularItem).size() / orderItemsMapping.size()) * 100) + "%)\n");
             }
             printWriter.flush();
         } catch (Exception e) {
