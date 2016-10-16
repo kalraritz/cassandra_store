@@ -51,7 +51,8 @@ public class TransactionClient {
             String diff = format("%02dmin%02dsec", TimeUnit.MILLISECONDS.toMinutes(timeInMs),
                     TimeUnit.MILLISECONDS.toSeconds(timeInMs) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMs))
             );
-            logger.info("Total Number of transactions processed: " + TransactionClient.totalNumberOfTransactionsProcessed + " in "+ diff);
+            logger.info("Total Number of transactions processed: " + TransactionClient.totalNumberOfTransactionsProcessed);
+            logger.info("Total elapsed time for processing the transactions (in seconds) : "+ diff);
             double transactionsPerSecond = (double) TransactionClient.totalNumberOfTransactionsProcessed / TimeUnit.MILLISECONDS.toSeconds(timeInMs);
             logger.info("Transaction throughput (number of transactions processed per second)::" + transactionsPerSecond);
             logger.info("---------------Ended executing transactions for "+ numberOfClients+" clients------------------------");
