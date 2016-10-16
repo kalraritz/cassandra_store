@@ -19,11 +19,11 @@ import java.util.concurrent.RunnableFuture;
  */
 public class NewOrderTransaction {
 
-    static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id","o_c_id","o_entry_d","o_carrier_id","o_ol_cnt","o_all_local","o_items");
+    static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id", "o_c_id", "o_entry_d", "o_carrier_id", "o_ol_cnt", "o_all_local", "o_items");
 
     static final String[] columns_next_order = {"no_d_next_o_id"};
 
-    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session,Lucene index, PrintWriter printWriter) {
+    public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session, Lucene index, PrintWriter printWriter) {
         try {
             // put the order in order status trasaction
             // put the order status transaction
@@ -31,16 +31,17 @@ public class NewOrderTransaction {
             // update next order
             // update stock level
 
-            String getDNextOID = "select no_d_next_o_id from next_order where no_w_id ="+1+" and no_d_id = 1";
+            String getDNextOID = "select no_d_next_o_id from next_order where no_w_id =" + 1 + " and no_d_id = 1";
             ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
-            String dNextOIDUpdate = "update next_order set no_d_next_o_id = "+(d_next_oid+1)+" where no_w_id ="+1+" and no_d_id = 1";
-            List<Object> values =  new ArrayList<Object>();
+            String dNextOIDUpdate = "update next_order set no_d_next_o_id = " + (d_next_oid + 1) + " where no_w_id =" + w_id + " and no_d_id = " + d_id;
+            List<Object> values = new ArrayList<Object>();
             values.add(w_id);
             values.add(d_id);
             values.add(d_next_oid + 1);
             values.add(c_id);
-            values.add(new Date());
+            Date orderEntryDate = new Date();
+            values.add(orderEntryDate);
             values.add(null);
             values.add(itemlineinfo.size());
 
@@ -52,7 +53,7 @@ public class NewOrderTransaction {
 
             String update = "BEGIN BATCH ";
             update = update + dNextOIDUpdate + ";";
-
+            StringBuilder sb = new StringBuilder();
             for (String item : itemlineinfo) {
                 String[] itemline = item.split(",");
 
@@ -62,9 +63,10 @@ public class NewOrderTransaction {
                 int ol_supply_w_id = Integer.parseInt(itemline[1]);
                 double ol_quantity = Double.parseDouble(itemline[2]);
                 double itemPrice = Double.parseDouble(itemStaticInfo[3]);
-                Item eachitem = new Item(ol_i_id, ++itemnum, ol_supply_w_id, ol_quantity, null, "", itemPrice * ol_quantity);
+                double ol_amount = itemPrice * ol_quantity;
+                Item eachitem = new Item(ol_i_id, ++itemnum, ol_supply_w_id, ol_quantity, null, "", ol_amount);
                 items.add(eachitem);
-                total_amount += itemPrice * ol_quantity;
+                total_amount += ol_amount;
                 if (ol_supply_w_id != w_id) {
                     all_local = 0;
                 }
@@ -87,12 +89,21 @@ public class NewOrderTransaction {
                 int s_order_cnt = stockInfoResults.getInt("s_order_cnt");
                 int s_remote_cnt = stockInfoResults.getInt("s_remote_cnt");
 
-                update = update + " UPDATE stock_level_transaction set s_quantity="+adjustedQuantiy+", s_ytd="+(s_ytd+ol_quantity)
-                        +", s_order_cnt="+(s_order_cnt+1)+", s_remote_cnt="+(s_remote_cnt+1)+" where s_w_id="+w_id+" and s_i_id="+ol_i_id+ ";";}
+                update = update + " UPDATE stock_level_transaction set s_quantity=" + adjustedQuantiy + ", s_ytd=" + (s_ytd + ol_quantity)
+                        + ", s_order_cnt=" + (s_order_cnt + 1) + ", s_remote_cnt=" + (s_remote_cnt + 1) + " where s_w_id=" + w_id + " and s_i_id=" + ol_i_id + ";";
+
+                // print info
+                sb.append("(ITEM_NUMBER " + eachitem.getOlNumber() + " | ");
+                sb.append("ITEM_NAME " + stockStaticInfo[13] + " | ");
+                sb.append("SUPPLIER_WAREHOUSE " + ol_supply_w_id + " | ");
+                sb.append("QUANTITY " + ol_quantity + " | ");
+                sb.append("OL_AMOUNT " + ol_amount + " | ");
+                sb.append("S_QUANTITY " + adjustedQuantiy +")"+ "\n");
+            }
             values.add(all_local);
             values.add(items);
 
-            update +="APPLY BATCH;";
+            update += "APPLY BATCH;";
             Statement insertNewOrder = QueryBuilder.insertInto("new_order_transaction").values(columns, values);
             session.execute(insertNewOrder);
             session.execute(update);
@@ -102,8 +113,17 @@ public class NewOrderTransaction {
 
             total_amount = total_amount * (1 + Double.parseDouble(districtStaticInfo[8]) + Double.parseDouble(warehouseStaticInfo[8]))
                     * (1 - Double.parseDouble(customerStaticInfo[15]));
-            printWriter.write("New Order Transaction--------"+"\n");
-            printWriter.write("Total amount : " + total_amount+"\n\n");
+            printWriter.write("NEW ORDER TRANSACTION--------" + "\n");
+            // (W ID, D ID, C ID), lastname C LAST, credit C CREDIT, discount C DISCOUNT
+            printWriter.write("Customer Identifier: (W ID, D ID, C ID), C_LAST, C_CREDIT, C_DISCOUNT)(" + w_id + ", " + d_id + ", " + c_id + ") " + customerStaticInfo[5] + ", " + customerStaticInfo[13] + ", " + customerStaticInfo[15] + "\n");
+            // Warehouse tax rate W TAX, District tax rate D TAX
+            printWriter.write("(W_TAX, D_TAX)(" + warehouseStaticInfo[7] + ", " + districtStaticInfo[8] + ")\n");
+            // Order number O ID, entry date O ENTRY D
+            printWriter.write("(O_ID, O_ENTRY_D)(" + (d_next_oid+1) + ", " + orderEntryDate + ")\n");
+            // Number of items NUM ITEMS, Total amount for order TOTAL AMOUNT
+            printWriter.write("(NUM_ITEMS, TOTAL_AMOUNT)(" + items.size() + ", " + total_amount + "\n");
+            printWriter.write(sb.toString());
+            printWriter.write("\n");
             printWriter.flush();
         } catch (Exception e) {
             e.printStackTrace();

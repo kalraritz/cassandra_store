@@ -19,7 +19,6 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 public class DeliveryTransaction {
     public void readDeliveryTransaction(int w_id, int carrier_id, Session session, PrintWriter printWriter)
     {
-        w_id = 1;
         try
         {
             List<ResultSet> resultSetList = new ArrayList<>();
@@ -53,7 +52,6 @@ public class DeliveryTransaction {
                         item.setOlDeliveryDate(new Timestamp(new Date().getTime()));
                         updated_orders.add(item);
                     }
-                    ol_amt_sum = 100;
                     //Update new order with carrier id and items set
                     Statement NewOrderDeliveryUpdate = QueryBuilder.update("new_order_transaction").with(QueryBuilder.set("o_carrier_id",carrier_id ))
                             .and(QueryBuilder.set("o_items", updated_orders))
@@ -61,8 +59,6 @@ public class DeliveryTransaction {
                             .and(QueryBuilder.eq("o_w_id",w_id))
                             .and(QueryBuilder.eq("o_d_id",d_id));
                     session.execute(NewOrderDeliveryUpdate);
-
-
                     Statement CustomerOrder = QueryBuilder.select().all().from("customer_data")
                             .where(QueryBuilder.eq("c_w_id",w_id))
                             .and(QueryBuilder.eq("c_d_id",d_id))
@@ -70,7 +66,6 @@ public class DeliveryTransaction {
                     Row customerResult= session.execute(CustomerOrder).one();
                     double balance = customerResult.getDouble("c_balance") + ol_amt_sum;
                     int delivery_cnt = customerResult.getInt("c_delivery_cnt") + 1;
-
                     Statement CustomerDataUpdate = QueryBuilder.update("customer_data").with(QueryBuilder.set("c_balance",balance ))
                             .and(QueryBuilder.set("c_delivery_cnt", delivery_cnt))
                             .where(QueryBuilder.eq("c_w_id", w_id))
@@ -79,9 +74,6 @@ public class DeliveryTransaction {
                     session.execute(CustomerDataUpdate);
                 }
             }
-
-
-
         }
         catch(Exception e)
         {

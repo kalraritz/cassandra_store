@@ -19,13 +19,12 @@ public final class CassandraSession {
     private static void createSession(Properties properties) throws Exception {
         Cluster cluster = Cluster.builder().addContactPoint(properties.getProperty("cassandra_ip")).build();
         session = cluster.connect(properties.getProperty("keyspace_name"));
+        logger.info("Session connected to cluster " + session.getCluster().getClusterName());
         CodecRegistry codecregisty = CodecRegistry.DEFAULT_INSTANCE;
-        System.out.println(session.getCluster().getClusterName());
         UserType itemType = cluster.getMetadata().getKeyspace(properties.getProperty("keyspace_name")).getUserType("item");
         TypeCodec<UDTValue> itemTypeCodec = codecregisty.codecFor(itemType);
         ItemCodec itemcodec = new ItemCodec(itemTypeCodec, Item.class);
         codecregisty.register(itemcodec);
-        logger.info("Session connected to " + session.getCluster().getClusterName());
     }
 
     public static Session getSession(Properties properties) {
