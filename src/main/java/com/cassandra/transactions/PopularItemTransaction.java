@@ -46,7 +46,7 @@ public class PopularItemTransaction {
                 Set<Item> orders = r.getSet("o_items", Item.class);
                 int order_id = r.getInt("o_id");
                 Date oentryd = r.getTimestamp("o_entry_d");
-                c_id = r.getInt("c_id");
+                c_id = r.getInt("o_c_id");
                 String customerStaticInfo = lucene.search(w_id + "" + d_id + "" + c_id, "customer-id", "customer-csv").get(0);
                 String indexData[] = customerStaticInfo.split(",");
                 String custname = "Customer name: " + indexData[3] + " " + indexData[4] + " " + indexData[5];
@@ -92,13 +92,15 @@ public class PopularItemTransaction {
                         items = itemOrdersMap.get(itemid);
                     }
                     items.add(entry.getKey());
+                    itemOrdersMap.put(itemid,items);
                 }
             }
             //Iterate over order-item map and get max item id for each order
             for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet()) {
                 int popularItem = getMaxQuantity(entry.getValue(), orderItemQuantity);
-                printWriter.write("(ITEM_NAME, ITEM_QUANTITY, PERCENTAGE OF ORDERS IN S THAT CONTAINS THIS ITEM)(" + orderItemName.get(popularItem) + "," + orderItemQuantity.get(popularItem) + ", " + ((itemOrdersMap.get(popularItem).size() / orderItemsMapping.size()) * 100) + "%)\n");
+                printWriter.write("(ITEM_NAME, ITEM_QUANTITY, PERCENTAGE OF ORDERS IN S THAT CONTAINS THIS ITEM)(" + orderItemName.get(popularItem) + "," + orderItemQuantity.get(popularItem) + ", " + ", " + ((itemOrdersMap.get(popularItem).size() / orderItemsMapping.size()) * 100) + "%)\n");
             }
+            printWriter.write("\n");
             printWriter.flush();
         } catch (Exception e) {
             e.printStackTrace();

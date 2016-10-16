@@ -96,6 +96,7 @@ public class TopBalanceTransaction {
 				if(itr == 10)
 					break;
 			}
+			printWriter.write("\n");
 			printWriter.flush();
 		}
 		catch(Exception e)

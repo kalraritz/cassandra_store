@@ -29,24 +29,13 @@ public class TransactionClient {
             Session session = CassandraSession.getSession(properties);
             Lucene lucene = new Lucene();
             lucene.initSearch(properties);
-            PrintWriter printWriter = new PrintWriter(new File(properties.getProperty("output_path")));
+            PrintWriter printWriter = new PrintWriter(new File(properties.getProperty("output_path") + args[0]));
             String transactionDir = properties.getProperty("transactions_dir");
            // System.out.println("Enter the number of clients:");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-            int numberOfClients = Integer.parseInt(bufferedReader.readLine());
-            logger.info("---------------Starting executing transactions for "+ numberOfClients+" clients------------------------");
-            TransactionDriver[] drivers = new TransactionDriver[numberOfClients];
             long startTime = System.currentTimeMillis();
             int i = Integer.parseInt(args[0]);
             new TransactionDriver(session, lucene, printWriter, "thread_"+i, new Date(), i, transactionDir).run();
-            /*
-            for(int i=0; i<numberOfClients; i++){
-                drivers[i] = new TransactionDriver(session, lucene, printWriter, "thread_"+i, new Date(), i, transactionDir);
-                drivers[i].start();
-            }
-            for(int i=0; i<numberOfClients; i++){
-                drivers[i].join();
-            }*/
             long timeInMs = System.currentTimeMillis() - startTime;
             String diff = format("%02dmin%02dsec", TimeUnit.MILLISECONDS.toMinutes(timeInMs),
                     TimeUnit.MILLISECONDS.toSeconds(timeInMs) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMs))
@@ -54,7 +43,6 @@ public class TransactionClient {
             logger.info("Total Number of transactions processed: " + TransactionClient.totalNumberOfTransactionsProcessed + " in "+ diff);
             double transactionsPerSecond = (double) TransactionClient.totalNumberOfTransactionsProcessed / TimeUnit.MILLISECONDS.toSeconds(timeInMs);
             logger.info("Transaction throughput (number of transactions processed per second)::" + transactionsPerSecond);
-            logger.info("---------------Ended executing transactions for "+ numberOfClients+" clients------------------------");
         } catch (Exception e) {
             e.printStackTrace();
         }

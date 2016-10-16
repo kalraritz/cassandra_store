@@ -77,6 +77,7 @@ public class PaymentTransaction {
                     + indexData[5] + " " + indexData[6] + "\n";
             output += "Payment amount : " + payment + "\n";
             printWriter.write(output + "\n");
+            printWriter.write("\n");
             printWriter.flush();
         } catch (Exception e) {
             e.printStackTrace();
