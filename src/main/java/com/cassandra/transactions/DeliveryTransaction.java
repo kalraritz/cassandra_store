@@ -25,7 +25,7 @@ public class DeliveryTransaction {
 
             //Get oldest order for 10 districts
             for(int i=1; i<=10; i++){
-                Statement getOrders = QueryBuilder.select().all().from("new_order_transaction")
+                Statement getOrders = QueryBuilder.select().all().from("")
                         .where(QueryBuilder.eq("o_w_id",w_id))
                         .and(QueryBuilder.eq("o_carrier_id",-1))
                         .and(QueryBuilder.eq("o_d_id", i))

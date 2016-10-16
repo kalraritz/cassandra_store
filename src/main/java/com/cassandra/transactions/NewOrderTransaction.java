@@ -20,7 +20,7 @@ import java.util.concurrent.RunnableFuture;
 public class NewOrderTransaction {
 
     static List<String> columns = Arrays.asList("o_w_id", "o_d_id", "o_id", "o_c_id", "o_entry_d", "o_carrier_id", "o_ol_cnt", "o_all_local", "o_items");
-
+    static Map<String,Integer> d_next_oid_map = new HashMap<String,Integer>();
     static final String[] columns_next_order = {"no_d_next_o_id"};
 
     public void newOrderTransaction(int w_id, int d_id, int c_id, ArrayList<String> itemlineinfo, Session session, Lucene index, PrintWriter printWriter) {
@@ -31,10 +31,33 @@ public class NewOrderTransaction {
             // update next order
             // update stock level
 
+
+            String next_id = w_id+""+d_id;
+            int d_next_oid = 0;
+            if(d_next_oid_map.get(next_id) == null)
+            {
+                String getDNextOID = "select no_d_next_o_id from next_order where no_w_id ="+w_id+" and no_d_id ="+d_id;
+                ResultSet results = session.execute(getDNextOID);
+                d_next_oid = results.one().getInt("no_d_next_o_id") + 1;
+            }
+            else
+            {
+                d_next_oid = d_next_oid_map.get(next_id) + 1;
+            }
+
+            d_next_oid_map.put(w_id+""+d_id,d_next_oid);
+            String update = "BEGIN BATCH ";
+            String dNextOIDUpdate = "update next_order set no_d_next_o_id = "+d_next_oid+" where no_w_id ="+w_id+"" +
+                    " and no_d_id = "+d_id;
+            //session.execute(dNextOIDUpdate);
+
+
+            /*
             String getDNextOID = "select no_d_next_o_id from next_order where no_w_id =" + 1 + " and no_d_id = 1";
             ResultSet results = session.execute(getDNextOID);
             int d_next_oid = results.one().getInt("no_d_next_o_id");
             String dNextOIDUpdate = "update next_order set no_d_next_o_id = " + (d_next_oid + 1) + " where no_w_id =" + w_id + " and no_d_id = " + d_id;
+            */
             List<Object> values = new ArrayList<Object>();
             values.add(w_id);
             values.add(d_id);
@@ -51,7 +74,6 @@ public class NewOrderTransaction {
             int ol_i_id = 0;
             double total_amount = 0.0;
 
-            String update = "BEGIN BATCH ";
             update = update + dNextOIDUpdate + ";";
             StringBuilder sb = new StringBuilder();
             for (String item : itemlineinfo) {

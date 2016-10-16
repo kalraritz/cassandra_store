@@ -1,6 +1,7 @@
 package com.cassandra.transactions;
 
 import com.cassandra.TransactionDriver;
+import com.cassandra.utilities.Lucene;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -31,11 +32,31 @@ class CustomerBalance{
 		this.c_balance = c_balance;
 	}
 
+	public int getWid() {
+		return wid;
+	}
+
+	public void setWid(int wid) {
+		this.wid = wid;
+	}
+
+	public int getDid() {
+		return did;
+	}
+
+	public void setDid(int did) {
+		this.did = did;
+	}
+
+	private int wid;
+	private int did;
 	private int cid;
 	private double c_balance;
 
 
-	public CustomerBalance(int cid, double c_balance) {
+	public CustomerBalance(int wid,int did,int cid, double c_balance) {
+		this.wid = wid;
+		this.did = did;
 		this.cid = cid;
 		this.c_balance = c_balance;
 	}
@@ -44,10 +65,10 @@ class CustomerBalance{
 public class TopBalanceTransaction {
 
 
-	final String[] columns_customer = {"c_id","c_balance"};
+	final String[] columns_customer = {"c_w_id","c_d_id","c_id","c_balance"};
 
 
-	public void getTopBalance(Session session, PrintWriter printWriter)
+	public void getTopBalance(Session session, PrintWriter printWriter, Lucene index)
 	{
 		try
 		{
@@ -57,7 +78,7 @@ public class TopBalanceTransaction {
 			ArrayList<CustomerBalance> objs = new ArrayList<CustomerBalance>();
 			for(Row row : results)
 			{
-				objs.add(new CustomerBalance(row.getInt("c_id"),row.getDouble("c_balance")));
+				objs.add(new CustomerBalance(row.getInt("c_w_id"),row.getInt("c_d_id"),row.getInt("c_id"),row.getDouble("c_balance")));
 			}
 			Collections.sort(objs,new CustomerComparator());
 
@@ -65,9 +86,13 @@ public class TopBalanceTransaction {
 			for(CustomerBalance c : objs)
 			{
 				itr++;
-				printWriter.write("Top Balance Transaction--------"+"\n");
-				printWriter.write("Customer Id : "+c.getCid()+"\n");
-				printWriter.write("Customer Balance : "+c.getC_balance()+"\n");
+				String[] customerData = index.search(c.getWid() + "" + c.getDid() + "" + c.getCid(), "customer-id", "customer-csv").get(0).split(",");
+                String[] warehouseStaticInfo = index.search(c.getWid() + "", "warehouse-id", "warehouse-csv").get(0).split(",");
+                String[] districtStaticInfo = index.search(c.getWid() + "" + c.getDid(), "district-id", "district-csv").get(0).split(",");
+                printWriter.write("Top Balance Transaction--------"+"\n");
+                printWriter.write("Customer name : " + customerData[3] + " " + customerData[4] + " " + customerData[5]
+                                + "| Customer Balance : "+c.getC_balance() +" | Warehouse name "+warehouseStaticInfo[1]
+                                + "| District name "+districtStaticInfo[2]);
 				if(itr == 10)
 					break;
 			}

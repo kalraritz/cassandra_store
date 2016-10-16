@@ -35,11 +35,21 @@ public class PopularItemTransaction {
             Set<Integer> itemids = new HashSet<Integer>();
             Map<Integer, List<Integer>> orderItemsMapping = new HashMap<Integer, List<Integer>>();
 
+
+            int c_id = 0;
+            String output = "";
+
+            printWriter.write("POPULAR ITEM TRANSACTION--------" + "\n");
+            printWriter.write("(W_ID, D_ID, NUM_OF_LAST_ORDER_TO_BE_EXAMINED)("+ w_id + ", "+ d_id + ", " + num_last_orders + ")");
+            printWriter.write("(W_ID, D_ID)("+ w_id + ","+ d_id + ")");
+
+
             //Add itemids to a list to fetch the quantity for each item
             //Create a map of order-items.
             for (Row r : results.all()) {
                 Set<Item> orders = r.getSet("o_items", Item.class);
                 int order_id = r.getInt("o_id");
+                c_id = r.getInt("c_id");
                 Iterator<Item> order_items = orders.iterator();
                 while (order_items.hasNext()) {
                     Item item = order_items.next();
@@ -68,9 +78,6 @@ public class PopularItemTransaction {
             }
 
             //Iterate over order-item map and get max item id for each order
-            printWriter.write("POPULAR ITEM TRANSACTION--------" + "\n");
-            printWriter.write("(W_ID, D_ID, NUM_OF_LAST_ORDER_TO_BE_EXAMINED)("+ w_id + ", "+ d_id + ", " + num_last_orders + ")");
-            printWriter.write("(W_ID, D_ID)("+ w_id + ","+ d_id + ")");
             for (Map.Entry<Integer, List<Integer>> entry : orderItemsMapping.entrySet()) {
                 printWriter.write("Order Id : " + entry.getKey()
                         + "\n" + "Item Id : " + getMaxQuantity(entry.getValue(), orderItemQuantity) + "\n");

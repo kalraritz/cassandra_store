@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.*;
 
-public class TransactionDriver extends Thread {
+public class TransactionDriver {
     private static Logger logger = Logger.getLogger(TransactionDriver.class);
     private Session session;
     private Lucene lucene;
@@ -34,7 +34,7 @@ public class TransactionDriver extends Thread {
         this.transactionDir = transactionDir;
     }
 
-    @Override
+   // @Override
     public void run() {
         int noOfTransactionsExecuted = readTransactionFiles(lucene, printWriter);
         logger.info("["+threadName+"]Ended executing transactions for the thread ::" + threadName + " total transactions=" + noOfTransactionsExecuted + " with file " + currentThread + ".txt");
@@ -139,7 +139,7 @@ public class TransactionDriver extends Thread {
                         break;
                     case "T":
                         ++t7cnt;
-                        new TopBalanceTransaction().getTopBalance(session, printWriter);
+                        new TopBalanceTransaction().getTopBalance(session, printWriter,lucene);
                         ++noOfTransactionsExecuted;
                         break;
                     default:

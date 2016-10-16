@@ -34,19 +34,22 @@ public class TransactionClient {
             lucene.initSearch(properties);
             PrintWriter printWriter = new PrintWriter(new File(properties.getProperty("output_path")));
             String transactionDir = properties.getProperty("transactions_dir");
-            System.out.println("Enter the number of clients:");
+           // System.out.println("Enter the number of clients:");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             int numberOfClients = Integer.parseInt(bufferedReader.readLine());
             logger.info("---------------Starting executing transactions for "+ numberOfClients+" clients------------------------");
             TransactionDriver[] drivers = new TransactionDriver[numberOfClients];
             long startTime = System.currentTimeMillis();
+            int i = Integer.parseInt(args[0]);
+            new TransactionDriver(session, lucene, printWriter, "thread_"+i, new Date(), i, transactionDir).run();
+            /*
             for(int i=0; i<numberOfClients; i++){
                 drivers[i] = new TransactionDriver(session, lucene, printWriter, "thread_"+i, new Date(), i, transactionDir);
                 drivers[i].start();
             }
             for(int i=0; i<numberOfClients; i++){
                 drivers[i].join();
-            }
+            }*/
             long timeInMs = System.currentTimeMillis() - startTime;
             String diff = format("%02dmin%02dsec", TimeUnit.MILLISECONDS.toMinutes(timeInMs),
                     TimeUnit.MILLISECONDS.toSeconds(timeInMs) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMs))
